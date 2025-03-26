@@ -37,11 +37,7 @@ class VentanaAdmin(QMainWindow):
 
         # Menú "Editar" (con la opción "Modificar")
         menu_editar = barra_menu.addMenu("Editar")
-
-        # Acción "Modificar"
-        accion_modificar = QAction("Modificar", self)
-        accion_modificar.triggered.connect(self.modificar)
-        menu_editar.addAction(accion_modificar)
+        menu_editar.triggered.connect(self.modificar)
 
         # Menú "Ayuda"
         menu_ayuda = barra_menu.addMenu("Ayuda")
