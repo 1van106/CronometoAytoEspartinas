@@ -1,6 +1,15 @@
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QMenuBar, QMenu,
-                             QWidget, QVBoxLayout, QLabel, QLineEdit,
-                             QPushButton, QHBoxLayout)
+from PyQt6.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QMenuBar,
+    QMenu,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QHBoxLayout
+)
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
 
@@ -108,6 +117,8 @@ class CronometroApp(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.actualizar_tiempo)
 
+#################################################################################
+
     def get_boton_style(self, color="#3498db"):
         return f"""
             QPushButton {{
@@ -125,6 +136,8 @@ class CronometroApp(QMainWindow):
             }}
         """
 
+#################################################################################
+
     def ajustar_tiempo(self, unidad, cambio):
         if self.corriendo:
             return
@@ -136,8 +149,12 @@ class CronometroApp(QMainWindow):
 
         self.actualizar_display()
 
+#################################################################################
+
     def actualizar_display(self):
         self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+
+#################################################################################
 
     def toggle_cronometro(self):
         self.corriendo = not self.corriendo
@@ -151,6 +168,8 @@ class CronometroApp(QMainWindow):
             self.btn_inicio.setStyleSheet(self.get_boton_style("#2ecc71"))
             self.timer.stop()
 
+#################################################################################
+
     def actualizar_tiempo(self):
         if self.segundos > 0:
             self.segundos -= 1
@@ -161,6 +180,8 @@ class CronometroApp(QMainWindow):
             self.toggle_cronometro()
 
         self.actualizar_display()
+
+#################################################################################
 
     def crear_menu(self):
         barra_menu = self.menuBar()
@@ -177,6 +198,7 @@ class CronometroApp(QMainWindow):
         # Menú Ayuda
         barra_menu.addMenu("Ayuda").addAction("Acerca de")
 
+#################################################################################
 
 if __name__ == "__main__":
     app = QApplication([])
