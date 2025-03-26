@@ -2,12 +2,12 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QMenuBar, QMenu, QMessag
 from PyQt6.QtGui import QAction
 
 
-class VentanaConMenu(QMainWindow):
+class VentanaAdmin(QMainWindow):
     def __init__(self):
         super().__init__()
 
         # Configuración básica de la ventana
-        self.setWindowTitle("Aplicación con Menú")
+        self.setWindowTitle("Menú Administración")
         self.setGeometry(100, 100, 800, 600)  # (x, y, ancho, alto)
 
         # Creamos la barra de menú
@@ -17,7 +17,7 @@ class VentanaConMenu(QMainWindow):
         # Creamos la barra de menú
         barra_menu = self.menuBar()
 
-        # Menú "Archivo" (con la opción "Agregar")
+        # Menú "Archivo"
         menu_archivo = barra_menu.addMenu("Archivo")
 
         # Acción "Agregar"
@@ -29,6 +29,11 @@ class VentanaConMenu(QMainWindow):
         accion_eliminar = QAction("Eliminar", self)
         accion_eliminar.triggered.connect(self.eliminar)
         menu_archivo.addAction(accion_eliminar)
+
+        # Acción "Salir"
+        accion_salir = QAction("Salir", self)
+        accion_salir.triggered.connect(self.salir)
+        menu_archivo.addAction(accion_salir)
 
         # Menú "Editar" (con la opción "Modificar")
         menu_editar = barra_menu.addMenu("Editar")
@@ -47,17 +52,24 @@ class VentanaConMenu(QMainWindow):
         menu_ayuda.addAction(accion_acerca)
 
     # Funciones que se ejecutan al hacer clic en los menús
-    #def agregar(self):
+    def agregar(self):
+        QMessageBox.information(self, "Agregar", "Has seleccionado: Agregar")
 
-    #def eliminar(self):
+    def eliminar(self):
+        QMessageBox.information(self, "Eliminar", "Has seleccionado: Eliminar")
 
-    #def modificar(self):
+    def salir(self):
+        QMessageBox.information(self, "Salir", "Has seleccionado: Salir")
+
+    def modificar(self):
+        QMessageBox.information(self, "Modificar", "Has seleccionado: Modificar")
 
     def mostrar_ayuda(self):
+        QMessageBox.about(self, "Ayuda", "Esta es una aplicación de ejemplo con menús.")
 
 
 if __name__ == "__main__":
     app = QApplication([])
-    ventana = VentanaConMenu()
+    ventana = VentanaAdmin()
     ventana.show()
     app.exec()
