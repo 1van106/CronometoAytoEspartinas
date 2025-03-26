@@ -47,17 +47,13 @@ class VentanaConMenu(QMainWindow):
         menu_ayuda.addAction(accion_acerca)
 
     # Funciones que se ejecutan al hacer clic en los menús
-    def agregar(self):
-        QMessageBox.information(self, "Agregar", "Has seleccionado: Agregar")
+    #def agregar(self):
 
-    def eliminar(self):
-        QMessageBox.information(self, "Eliminar", "Has seleccionado: Eliminar")
+    #def eliminar(self):
 
-    def modificar(self):
-        QMessageBox.information(self, "Modificar", "Has seleccionado: Modificar")
+    #def modificar(self):
 
     def mostrar_ayuda(self):
-        QMessageBox.about(self, "Ayuda", "Esta es una aplicación de ejemplo con menús.")
 
 
 if __name__ == "__main__":
