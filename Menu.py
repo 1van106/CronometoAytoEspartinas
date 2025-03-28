@@ -14,10 +14,11 @@ class CronometroApp(QMainWindow):
         self.setWindowTitle("Ayuntamiento de Espartinas")
         self.resize(800, 600)
 
-        self.minutos = 5  # Inicializamos el cronómetro con 5 minutos para probar
+        self.minutos = 0  
         self.segundos = 0
         self.temporizadores = []
         self.fuente_oficial = QFont("Times New Roman", 48, QFont.Weight.Bold)
+        self.cronometro_editando = None  
 
         pygame.mixer.init()  # Inicializar el sistema de audio
         self.sound_alarm = pygame.mixer.Sound("assets/beep-01a.wav")
@@ -60,7 +61,7 @@ class CronometroApp(QMainWindow):
         izquierda = QVBoxLayout()
 
         self.titulo = QLineEdit("", alignment=Qt.AlignmentFlag.AlignCenter)
-        self.titulo.setPlaceholderText("Título")  # El placeholder es lo que se muestra inicialmente
+        self.titulo.setPlaceholderText("Título")  
         self.titulo.setStyleSheet("font: bold 18px Arial; color: #2c3e50; padding: 10px; border: 3px solid #3498db; border-radius: 10px; background: #ecf0f1;")
         izquierda.addWidget(self.titulo)
 
@@ -97,25 +98,14 @@ class CronometroApp(QMainWindow):
 
         # Menú Archivo
         archivo_menu = barra_menu.addMenu("Archivo")
-        
-        # Submenú Pleno Ordinario
-        pleno_ordinario_menu = archivo_menu.addMenu("Pleno Ordinario")
-        pleno_ordinario_menu.addAction("Agregar").triggered.connect(self.mostrar_agregar)
-        pleno_ordinario_menu.addAction("Eliminar")  # Placeholder sin funcionalidad
-        pleno_ordinario_menu.addAction("Actualizar")  # Placeholder sin funcionalidad
 
+        # Submenú Pleno Ordinario
+        archivo_menu.addAction("Pleno Ordinario").triggered.connect(self.mostrar_agregar)
+    
         # Submenú Pleno Extraordinario
-        pleno_extraordinario_menu = archivo_menu.addMenu("Pleno Extraordinario")
-        pleno_extraordinario_menu.addAction("Agregar").triggered.connect(self.mostrar_agregar)
-        pleno_extraordinario_menu.addAction("Eliminar")  # Placeholder sin funcionalidad
-        pleno_extraordinario_menu.addAction("Actualizar")  # Placeholder sin funcionalidad
+        archivo_menu.addAction("Pleno Extraordinario").triggered.connect(self.mostrar_agregar)
 
         archivo_menu.addAction("Salir").triggered.connect(self.close)
-
-        # Menú Abrir (sin funcionalidad todavía)
-        abrir_menu = barra_menu.addMenu("Abrir")
-        abrir_menu.addAction("Abrir Pleno Ordinario")  # Placeholder sin funcionalidad
-        abrir_menu.addAction("Abrir Pleno Extraordinario")  # Placeholder sin funcionalidad
 
     def mostrar_agregar(self):
         self.stacked_widget.setCurrentIndex(1)
@@ -126,7 +116,7 @@ class CronometroApp(QMainWindow):
             QMessageBox.warning(self, "Error", "El cronómetro debe tener un título y un tiempo mayor a 00:00.")
             return
 
-        # Crear contenedor para el cronómetro
+        # Crear contenedor para el cronómetro (esto debe ser siempre, tanto para agregar como para editar)
         contenedor = QWidget()
         contenedor_layout = QVBoxLayout(contenedor)
         
@@ -137,13 +127,18 @@ class CronometroApp(QMainWindow):
 
         # Tiempo grande
         tiempo_label = QLabel(f"{self.minutos:02d}:{self.segundos:02d}", alignment=Qt.AlignmentFlag.AlignCenter)
-        tiempo_label.setStyleSheet("font:  36px Arial; color: #bdc3c7; border-radius: 8px; border: 3px solid #3498db;")
+        tiempo_label.setStyleSheet("font: 36px Arial; color: #bdc3c7; border-radius: 8px; border: 3px solid #3498db;")
         contenedor_layout.addWidget(tiempo_label)
 
-        
-        contenedor.setStyleSheet(" border-radius: 15px; padding: 10px; margin-bottom: 20px;")  
+        contenedor.setStyleSheet(
+        "border: 2px solid #3498db;"  # Borde azul para distinguir los contenedores
+        "border-radius: 8px;"  # Bordes ligeramente redondeados
+        "padding: 3px;"  # Espaciado interno más pequeño
+        "margin-bottom: 5px;"  # Menos separación entre cronómetros
+        "background-color: #f0f0f0;"  # Fondo gris claro para mejor visualización
+        )  
 
-        # Botones de play y reset (iconos blancos)
+        # Botones de play y reset
         botones_layout = QHBoxLayout()
         btn_play = QPushButton("Play", clicked=lambda: self.toggle_cronometro(contenedor, tiempo_label))
         btn_play.setStyleSheet("background-color: #3498db; color: white; padding: 10px; border-radius: 5px;")
@@ -151,22 +146,47 @@ class CronometroApp(QMainWindow):
         btn_reset.setStyleSheet("background-color: #3498db; color: white; padding: 10px; border-radius: 5px;")
         botones_layout.addWidget(btn_play)
         botones_layout.addWidget(btn_reset)
+
+        # Agregar icono de editar (lápiz)
+        btn_editar = QPushButton()
+        btn_editar.setIcon(QIcon("assets/lapiz.png"))
+        btn_editar.clicked.connect(lambda: self.editar_temporizador(contenedor))
+        botones_layout.addWidget(btn_editar)
+
+        # Agregar icono de eliminar (papelera)
+        btn_eliminar = QPushButton()
+        btn_eliminar.setIcon(QIcon("assets/papelera.png"))
+        btn_eliminar.clicked.connect(lambda: self.eliminar_temporizador(contenedor))
+        botones_layout.addWidget(btn_eliminar)
         contenedor_layout.addLayout(botones_layout)
 
-        # Añadir el contenedor a la lista
-        self.temporizadores.append({
-            "nombre": nombre, "minutos": self.minutos, "segundos": self.segundos, 
-            "corriendo": False, "timer": None, "contenedor": contenedor, "tiempo_label": tiempo_label
-        })
-        item = QListWidgetItem()
-        item.setSizeHint(contenedor.sizeHint())
-        self.lista_temporizadores.addItem(item)
-        self.lista_temporizadores.setItemWidget(item, contenedor)
+        # Si estamos editando, actualizamos el cronómetro
+        if self.cronometro_editando:
+            cronometro = self.cronometro_editando
+            cronometro["nombre"] = nombre
+            cronometro["minutos"] = self.minutos
+            cronometro["segundos"] = self.segundos
+            cronometro["tiempo_label"].setText(f"{self.minutos:02d}:{self.segundos:02d}")
+            cronometro["contenedor"].findChild(QLabel).setText(nombre)  # Actualizar el título
+            self.cronometro_editando = None  # Limpiar la referencia de edición
+        else:
+            # Si no estamos editando, agregamos un nuevo cronómetro
+            self.temporizadores.append({
+                "nombre": nombre, "minutos": self.minutos, "segundos": self.segundos, 
+                "corriendo": False, "timer": None, "contenedor": contenedor, "tiempo_label": tiempo_label
+            })
+            item = QListWidgetItem()
+            item.setSizeHint(contenedor.sizeHint())
+            self.lista_temporizadores.addItem(item)
+            self.lista_temporizadores.setItemWidget(item, contenedor)
 
-        # Limpiar para el siguiente cronómetro
-        self.titulo.clear()
-        self.minutos = self.segundos = 0
-        self.display.setText("00:00")
+            # Limpiar para el siguiente cronómetro
+            self.titulo.clear()
+            self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+
+    def reset_cronometro(self, tiempo_label):
+        # Restaurar el cronómetro a su tiempo editado
+        tiempo_label.setText(f"{self.minutos:02d}:{self.segundos:02d}")
 
     def toggle_cronometro(self, contenedor, tiempo_label):
         # Buscar el cronómetro en la lista
@@ -189,8 +209,34 @@ class CronometroApp(QMainWindow):
         cronometro["corriendo"] = False
         cronometro["timer"].stop()
 
-    def reset_cronometro(self, tiempo_label):
-       tiempo_label.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+    def editar_temporizador(self, contenedor):
+        # Buscar el cronómetro en la lista
+        cronometro = next((c for c in self.temporizadores if c["contenedor"] == contenedor), None)
+        if cronometro:
+            self.cronometro_editando = cronometro  # Guardar el cronómetro a editar
+            self.titulo.setText(cronometro["nombre"])
+            self.minutos = cronometro["minutos"]
+            self.segundos = cronometro["segundos"]
+            self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+            self.stacked_widget.setCurrentIndex(1)  # Mostrar la pantalla de agregar
+
+    def eliminar_temporizador(self, contenedor):
+       # Buscar el cronómetro en la lista
+       cronometro = next((c for c in self.temporizadores if c["contenedor"] == contenedor), None)
+       if cronometro:
+        # Buscar el item correspondiente en la lista mediante la referencia del widget
+        item = None
+        for i in range(self.lista_temporizadores.count()):
+            list_item = self.lista_temporizadores.item(i)
+            widget = self.lista_temporizadores.itemWidget(list_item)
+            if widget == contenedor:
+                item = list_item
+                break
+
+        if item:
+            row = self.lista_temporizadores.row(item)  # Obtener la fila del item
+            self.lista_temporizadores.takeItem(row)  # Eliminar el item de la lista
+            self.temporizadores.remove(cronometro) 
 
     def actualizar_tiempo(self, cronometro, tiempo_label):
         # Reducir el tiempo del cronómetro
@@ -207,16 +253,17 @@ class CronometroApp(QMainWindow):
         elif tipo == "seg":
             self.segundos = max(0, self.segundos + valor)  # No permitir segundos negativos
 
-        # Actualizar la visualización
+        # Actualizar la visualización de la pantalla de edición
         self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
 
     def get_boton_style(self, color="#3498db"):
-        return f"font: bold 12px Arial; color: white; background: {color}; padding: 6px 12px; border-radius: 6px; margin: 3px;"
+        return f"font: bold 20px Arial; color: white; padding: 10px; border-radius: 5px; background-color: {color};"
 
 
 if __name__ == "__main__":
     app = QApplication([])
-    ventana = CronometroApp()
-    ventana.show()
+    window = CronometroApp()
+    window.show()
     app.exec()
+
 
