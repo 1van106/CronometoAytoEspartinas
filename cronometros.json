@@ -1,0 +1,42 @@
+[
+    {
+        "nombre": "1\u00aa Intervenci\u00f3n PSOE",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "1\u00aa Intervenci\u00f3n PP",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "1\u00aa Intervenci\u00f3n VOX",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "1\u00aa Intervenci\u00f3n CA",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "2\u00aa Intervenci\u00f3n PSOE",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "2\u00aa Intervenci\u00f3n PP",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "2\u00aa Intervenci\u00f3n VOX",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "2\u00aa Intervenci\u00f3n CA",
+        "minutos": 1,
+        "segundos": 0
+    }
+]

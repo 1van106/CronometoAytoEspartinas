@@ -1,123 +1,214 @@
+import os
+import sys
 from PyQt6.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QMenuBar,
-    QMenu,
-    QWidget,
-    QVBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QHBoxLayout
+    QApplication, QMainWindow, QMenuBar, QMenu, QWidget,
+    QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout,
+    QStackedWidget, QFrame, QSizePolicy
 )
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QPixmap, QGuiApplication
 
 
 class CronometroApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Configuración de la ventana
-        self.setWindowTitle("Cronómetro Elegante")
-        self.setGeometry(100, 100, 800, 600)
-        self.setMinimumSize(600, 450)
+        # Configuración de pantalla completa
+        self.setWindowTitle("Ayuntamiento de Espartinas")
+        screen = QGuiApplication.primaryScreen().geometry()
+        self.setGeometry(screen)
+        self.showFullScreen()
 
         # Variables de estado
         self.minutos = 0
         self.segundos = 0
         self.corriendo = False
 
+        # Fuentes
+        self.fuente_oficial = QFont("Times New Roman", 48, QFont.Weight.Bold)
+        self.fuente_secundaria = QFont("Arial", 14)
+
         # Crear interfaz
         self.init_ui()
 
     def init_ui(self):
-        # Widget central
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
-        layout = QVBoxLayout()
-        central_widget.setLayout(layout)
+        # Widget principal con stacked layout
+        self.stacked_main = QStackedWidget()
+        self.setCentralWidget(self.stacked_main)
 
-        # 1. Título editable (estilizado)
-        self.titulo = QLineEdit("Mi Cronómetro")
+        # 1. PANTALLA INICIAL (completa)
+        self.pagina_inicio = self.crear_pagina_inicio()
+
+        # 2. PANTALLA DIVIDIDA (cronómetro + área derecha)
+        self.pagina_dividida = self.crear_pagina_dividida()
+
+        self.stacked_main.addWidget(self.pagina_inicio)
+        self.stacked_main.addWidget(self.pagina_dividida)
+        self.stacked_main.setCurrentIndex(0)
+
+        # Menú
+        self.crear_menu()
+
+    def crear_pagina_inicio(self):
+        pagina = QWidget()
+        layout = QVBoxLayout()
+        pagina.setLayout(layout)
+
+        # Añadir espacio flexible arriba para centrar verticalmente
+        layout.addStretch(1)  # Esto empujará el contenido hacia el centro
+
+        # Título con menos margen superior
+        titulo = QLabel("AYUNTAMIENTO DE ESPARTINAS")
+        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        titulo.setFont(self.fuente_oficial)
+        titulo.setStyleSheet("""
+            QLabel {
+                color: white;
+                margin-bottom: 30px;  # Solo margen inferior
+            }
+        """)
+        layout.addWidget(titulo)
+
+        # Logo más grande y centrado
+        logo_label = QLabel()
+        logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        logo_path = ".venv/image/logo_espartinas.png"
+        pixmap = QPixmap(logo_path)
+
+        if not pixmap.isNull():
+            # Tamaño aumentado (450x450 manteniendo proporciones)
+            pixmap = pixmap.scaled(450, 450,
+                                   Qt.AspectRatioMode.KeepAspectRatio,
+                                   Qt.TransformationMode.SmoothTransformation)
+            logo_label.setPixmap(pixmap)
+            logo_label.setFixedSize(pixmap.size())
+        else:
+            logo_label.setText("[LOGO AYUNTAMIENTO]")
+            logo_label.setStyleSheet("""
+                QLabel {
+                    color: white; 
+                    font-size: 24px;
+                    background-color: #cccccc;
+                    border: 2px dashed #999999;
+                    min-width: 450px;
+                    min-height: 450px;
+                }
+            """)
+
+        layout.addWidget(logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        # Añadir espacio flexible abajo para balancear el centrado
+        layout.addStretch(1)
+
+        return pagina
+
+    def crear_pagina_dividida(self):
+        pagina = QWidget()
+        layout = QHBoxLayout()
+        pagina.setLayout(layout)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
+        # --- MITAD IZQUIERDA: Cronómetro ---
+        self.left_frame = QFrame()
+        self.left_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        left_layout = QVBoxLayout()
+        self.left_frame.setLayout(left_layout)
+
+        # Añadir espacio flexible arriba para centrar verticalmente
+        left_layout.addStretch(1)
+
+        # Editor de cronómetro
+        self.titulo = QLineEdit("Cronómetro")
         self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.titulo.setStyleSheet("""
             QLineEdit {
-                font: bold 24px 'Arial';
+                font: bold 18px 'Arial';
                 color: #2c3e50;
-                padding: 15px;
-                border: 3px solid #3498db;
-                border-radius: 10px;
-                margin: 20px 100px;
+                padding: 10px;
+                border: 2px solid #3498db;
+                border-radius: 8px;
+                margin: 10px 50px;
                 background: #ecf0f1;
             }
         """)
-        layout.addWidget(self.titulo)
+        left_layout.addWidget(self.titulo)
 
-        # 2. Display del tiempo (estilizado)
         self.display = QLabel("00:00")
         self.display.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.display.setStyleSheet("""
             QLabel {
-                font: bold 72px 'Arial';
+                font: bold 60px 'Arial';
                 color: #3498db;
-                margin: 30px;
-                padding: 20px;
+                margin: 20px;
+                padding: 15px;
                 background: #f8f9fa;
-                border-radius: 15px;
-                border: 4px solid #bdc3c7;
+                border-radius: 12px;
+                border: 3px solid #bdc3c7;
             }
         """)
-        layout.addWidget(self.display)
+        left_layout.addWidget(self.display)
 
-        # 3. Controles de tiempo
         controles_layout = QHBoxLayout()
-
-        # Botón - Minutos
         btn_min_down = QPushButton("◄ Min")
         btn_min_down.setStyleSheet(self.get_boton_style())
         btn_min_down.clicked.connect(lambda: self.ajustar_tiempo("min", -1))
 
-        # Botón - Segundos
         btn_seg_down = QPushButton("◄ Seg")
         btn_seg_down.setStyleSheet(self.get_boton_style())
         btn_seg_down.clicked.connect(lambda: self.ajustar_tiempo("seg", -1))
 
-        # Botón + Minutos
         btn_min_up = QPushButton("Min ►")
         btn_min_up.setStyleSheet(self.get_boton_style())
         btn_min_up.clicked.connect(lambda: self.ajustar_tiempo("min", 1))
 
-        # Botón + Segundos
         btn_seg_up = QPushButton("Seg ►")
         btn_seg_up.setStyleSheet(self.get_boton_style())
         btn_seg_up.clicked.connect(lambda: self.ajustar_tiempo("seg", 1))
 
-        # Añadir botones al layout
         controles_layout.addStretch()
         controles_layout.addWidget(btn_min_down)
         controles_layout.addWidget(btn_seg_down)
-        controles_layout.addSpacing(40)
+        controles_layout.addSpacing(20)
         controles_layout.addWidget(btn_min_up)
         controles_layout.addWidget(btn_seg_up)
         controles_layout.addStretch()
 
-        layout.addLayout(controles_layout)
+        left_layout.addLayout(controles_layout)
 
-        # 4. Botones de control
-        self.btn_inicio = QPushButton("Iniciar")
-        self.btn_inicio.setStyleSheet(self.get_boton_style("#2ecc71"))
-        self.btn_inicio.clicked.connect(self.toggle_cronometro)
-        layout.addWidget(self.btn_inicio, alignment=Qt.AlignmentFlag.AlignCenter)
+        # Cambiar botón "Iniciar" por "Confirmar" (sin funcionalidad por ahora)
+        self.btn_confirmar = QPushButton("Confirmar")
+        self.btn_confirmar.setStyleSheet(self.get_boton_style("#2ecc71"))
+        left_layout.addWidget(self.btn_confirmar, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        # 5. Barra de menú (simplificada)
-        self.crear_menu()
+        # Añadir espacio flexible abajo para balancear el centrado
+        left_layout.addStretch(1)
 
-        # Timer para el cronómetro
+        # --- MITAD DERECHA: Mismo color que el izquierdo ---
+        self.right_frame = QFrame()
+        self.right_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.right_frame.setStyleSheet("background-color: #f8f9fa;")  # Mismo color que el display
+
+        # Layout para futuros widgets
+        self.right_layout = QVBoxLayout()
+        self.right_frame.setLayout(self.right_layout)
+
+        # Añadir placeholder (opcional, puedes quitarlo si prefieres)
+        placeholder = QLabel("Área para implementaciones futuras")
+        placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        placeholder.setFont(self.fuente_secundaria)
+        self.right_layout.addWidget(placeholder)
+
+        # Añadir frames al layout principal
+        layout.addWidget(self.left_frame, stretch=1)  # 50%
+        layout.addWidget(self.right_frame, stretch=1)  # 50%
+
+        # Timer (lo mantenemos por si luego implementamos funcionalidad)
         self.timer = QTimer()
         self.timer.timeout.connect(self.actualizar_tiempo)
 
-#################################################################################
+        return pagina
 
     def get_boton_style(self, color="#3498db"):
         return f"""
@@ -136,8 +227,6 @@ class CronometroApp(QMainWindow):
             }}
         """
 
-#################################################################################
-
     def ajustar_tiempo(self, unidad, cambio):
         if self.corriendo:
             return
@@ -149,26 +238,8 @@ class CronometroApp(QMainWindow):
 
         self.actualizar_display()
 
-#################################################################################
-
     def actualizar_display(self):
         self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
-
-#################################################################################
-
-    def toggle_cronometro(self):
-        self.corriendo = not self.corriendo
-
-        if self.corriendo:
-            self.btn_inicio.setText("Detener")
-            self.btn_inicio.setStyleSheet(self.get_boton_style("#e74c3c"))
-            self.timer.start(1000)
-        else:
-            self.btn_inicio.setText("Iniciar")
-            self.btn_inicio.setStyleSheet(self.get_boton_style("#2ecc71"))
-            self.timer.stop()
-
-#################################################################################
 
     def actualizar_tiempo(self):
         if self.segundos > 0:
@@ -181,24 +252,28 @@ class CronometroApp(QMainWindow):
 
         self.actualizar_display()
 
-#################################################################################
-
     def crear_menu(self):
         barra_menu = self.menuBar()
 
         # Menú Archivo
         archivo_menu = barra_menu.addMenu("Archivo")
-        archivo_menu.addAction("Agregar")
+        accion_agregar = archivo_menu.addAction("Agregar")
+        accion_agregar.triggered.connect(self.mostrar_editor)
         archivo_menu.addAction("Eliminar")
-        archivo_menu.addAction("Salir")
+
+        # Opción Salir que cierra la aplicación directamente
+        archivo_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
 
         # Menú Editar
-        editar_menu = barra_menu.addMenu("Editar")
+        barra_menu.addMenu("Editar")
 
         # Menú Ayuda
         barra_menu.addMenu("Ayuda").addAction("Acerca de")
 
-#################################################################################
+    def mostrar_editor(self):
+        """Cambia a la vista dividida con el cronómetro"""
+        self.stacked_main.setCurrentIndex(1)
+
 
 if __name__ == "__main__":
     app = QApplication([])
