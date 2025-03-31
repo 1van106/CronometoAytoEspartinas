@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QPixmap, QGuiApplication, QIcon
 
+from visualizacion import VentanaVisualizacion
 
 class CronometroApp(QMainWindow):
     def __init__(self):
@@ -20,7 +21,7 @@ class CronometroApp(QMainWindow):
         self.setWindowTitle("Ayuntamiento de Espartinas")
         screen = QGuiApplication.primaryScreen().geometry()
         self.setGeometry(screen)
-        self.showFullScreen()
+        
 
         # Variables de estado
         self.minutos = 0
@@ -72,7 +73,7 @@ class CronometroApp(QMainWindow):
         titulo.setFont(self.fuente_oficial)
         titulo.setStyleSheet("""
             QLabel {
-                color: white;
+                color: blue;
                 margin-bottom: 30px;
             }
         """)
@@ -228,11 +229,11 @@ class CronometroApp(QMainWindow):
         # Menú Visualización
         visualizacion_menu = barra_menu.addMenu("Visualización")
         visualizacion_menu.addAction("Ver Pleno Ordinario").triggered.connect(lambda: self.mostrar_pleno("ordinario"))
-        visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(
-            lambda: self.mostrar_pleno("extraordinario"))
+        visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(lambda: self.mostrar_pleno("extraordinario"))
 
         # Opción Salir
         barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
+
 
     def mostrar_editor(self, tipo_pleno):
         """Cambia a la vista dividida con el cronómetro"""
@@ -242,21 +243,28 @@ class CronometroApp(QMainWindow):
 
     def mostrar_pleno(self, tipo_pleno):
         cronometros = self.cargar_datos(tipo_pleno)
-        ventana_visualizacion = VentanaVisualizacion(cronometros)
-        ventana_visualizacion.show()
+        print(f"Cronómetros cargados: {cronometros}")  
+
+        if cronometros:
+          self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)  # ✅ Se pasa tipo_pleno correctamente
+          self.ventana_visualizacion.show()
+        else:
+          print("No se encontraron cronómetros para mostrar.")
 
     def guardar_datos(self):
-        datos = []
-        for cronometro in self.temporizadores:
-            datos.append({
-                "nombre": cronometro["nombre"],
-                "minutos": cronometro["minutos"],
-                "segundos": cronometro["segundos"]
-            })
+      datos = []
+      for cronometro in self.temporizadores:
+        datos.append({
+            "nombre": cronometro["nombre"],
+            "minutos": cronometro["minutos"],
+            "segundos": cronometro["segundos"]
+        })
 
-        nombre_archivo = f"cronometros_{self.tipo_pleno_actual}.json"
-        with open(nombre_archivo, "w") as file:
-            json.dump(datos, file, indent=4)
+      print(f"Guardando datos: {datos}")  # Agregar esta línea para debug
+
+      nombre_archivo = f"cronometros_{self.tipo_pleno_actual}.json"
+      with open(nombre_archivo, "w") as file:
+        json.dump(datos, file, indent=4)
 
     def cargar_datos(self, tipo_pleno):
         nombre_archivo = f"cronometros_{tipo_pleno}.json"
@@ -398,6 +406,57 @@ class CronometroApp(QMainWindow):
             self.segundos = cronometro["segundos"]
             self.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
             self.stacked_main.setCurrentIndex(1)
+             # El botón de guardar edita en lugar de agregar uno nuevo
+            self.btn_agregar.setText("Actualizar")  
+            self.btn_agregar.clicked.disconnect()  # Desconectar cualquier señal previa
+            self.btn_agregar.clicked.connect(self.actualizar_temporizador)
+            self.stacked_main.setCurrentIndex(1)
+    
+    def actualizar_temporizador(self):
+        if not self.cronometro_editando:
+           return
+    
+        nombre = self.titulo.text().strip()
+        if not nombre or (self.minutos == 0 and self.segundos == 0):
+           QMessageBox.warning(self, "Error", "El cronómetro debe tener un título y un tiempo mayor a 00:00.")
+           return
+    
+        # Actualizar los valores del cronómetro editado
+        self.cronometro_editando["nombre"] = nombre
+        self.cronometro_editando["minutos"] = self.minutos
+        self.cronometro_editando["segundos"] = self.segundos
+    
+        # Actualizar la UI
+        self.cronometro_editando["tiempo_label"].setText(f"{self.minutos:02d}:{self.segundos:02d}")
+
+        # Buscar el widget correspondiente en la lista y actualizarlo
+        for i in range(self.lista_temporizadores.count()):
+          item = self.lista_temporizadores.item(i)
+          widget = self.lista_temporizadores.itemWidget(item)
+        
+          if widget == self.cronometro_editando["contenedor"]:
+            # Encontrado, actualizar el nombre y el tiempo
+            labels = widget.findChildren(QLabel)
+            if labels:
+                labels[0].setText(nombre)  # Título
+                labels[1].setText(f"{self.minutos:02d}:{self.segundos:02d}")  # Tiempo
+            
+            break
+
+        # Guardar los cambios en el JSON
+        self.guardar_datos()
+
+        # Regresar a la lista de cronómetros
+        self.stacked_main.setCurrentIndex(1)
+
+        # Restaurar el botón de guardar a su función original
+        self.btn_agregar.setText("Agregar")
+        self.btn_agregar.clicked.disconnect()
+        self.btn_agregar.clicked.connect(self.agregar_temporizador)
+
+        # Limpiar la referencia al cronómetro editado
+        self.cronometro_editando = None
+        self.guardar_datos()
 
     def eliminar_temporizador(self, contenedor):
         # Buscar el cronómetro en la lista
@@ -457,50 +516,3 @@ class CronometroApp(QMainWindow):
                 background: #2980b9;
             }}
         """
-
-
-class VentanaVisualizacion(QWidget):
-    def __init__(self, cronometros):
-        super().__init__()
-        self.setWindowTitle("Visualización de Cronómetros")
-        self.resize(800, 600)
-        self.init_ui(cronometros)
-
-    def init_ui(self, cronometros):
-        layout = QVBoxLayout(self)
-        grid_layout = QGridLayout()
-
-        for i, cronometro in enumerate(cronometros):
-            contenedor = QWidget()
-            contenedor_layout = QVBoxLayout(contenedor)
-
-            # Título
-            nombre_label = QLabel(cronometro["nombre"])
-            nombre_label.setStyleSheet("font: bold 24px Arial; color: black;")
-            contenedor_layout.addWidget(nombre_label)
-
-            # Tiempo
-            tiempo_label = QLabel(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
-            tiempo_label.setStyleSheet("font: 36px Arial; color: black;")
-            contenedor_layout.addWidget(tiempo_label)
-
-            contenedor.setStyleSheet(
-                "border: 3px solid black;"
-                "padding: 3px;"
-                "margin: 5px;"
-                "background-color: #f0f0f0;"
-            )
-
-            # Agregar al grid layout (2 columnas)
-            fila = i // 2
-            columna = i % 2
-            grid_layout.addWidget(contenedor, fila, columna)
-
-        layout.addLayout(grid_layout)
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    ventana = CronometroApp()
-    ventana.show()
-    app.exec()
