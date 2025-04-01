@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="e2e737cc-718b-4735-ac6a-e82c337afcce" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cronometro_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/cronometro_app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cronometros_extraordinario.json" beforeDir="false" afterPath="$PROJECT_DIR$/cronometros_extraordinario.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cronometro_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cronometro_app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cronometros_ordinario.json" beforeDir="false" afterPath="$PROJECT_DIR$/cronometros_ordinario.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/vista_dividida.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/vista_dividida.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/vista_inicio.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/vista_inicio.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +41,8 @@
     "Python.Menu.executor": "Run",
     "Python.cronometro_app.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.vista_dividida.executor": "Run",
+    "Python.vista_inicio.executor": "Run",
     "Python.visualizacion.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",

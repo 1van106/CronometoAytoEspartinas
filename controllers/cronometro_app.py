@@ -171,9 +171,6 @@ class CronometroApp(QMainWindow):
 
     def eliminar_temporizador(self, cronometro):
         """Elimina un temporizador"""
-        if cronometro.corriendo:
-            cronometro.detener()
-
         # Eliminar el ítem de la lista gráfica
         for i in range(self.pagina_dividida.lista_temporizadores.count()):
             item = self.pagina_dividida.lista_temporizadores.item(i)
@@ -183,7 +180,9 @@ class CronometroApp(QMainWindow):
                 break
 
         # Eliminar de la lista de temporizadores
-        self.temporizadores.remove(cronometro)
+        if cronometro in self.temporizadores:
+            self.temporizadores.remove(cronometro)
+
         Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
 
     def ajustar_tiempo(self, tipo, valor):
