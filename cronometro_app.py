@@ -83,8 +83,8 @@ class CronometroApp(QMainWindow):
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        logo_path = ".venv/image/logo_espartinas.png" if os.path.exists(
-            ".venv/image/logo_espartinas.png") else "logo_espartinas.png"
+        logo_path = "assets/logo_espartinas.png" if os.path.exists(
+            "assets/logo_espartinas.png") else "logo_espartinas.png"
         pixmap = QPixmap(logo_path)
 
         if not pixmap.isNull():
