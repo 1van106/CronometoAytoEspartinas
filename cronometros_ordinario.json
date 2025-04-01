@@ -1,7 +1,12 @@
 [
     {
         "nombre": "1 --",
+        "minutos": 0,
+        "segundos": 5
+    },
+    {
+        "nombre": "2 --",
         "minutos": 1,
-        "segundos": 0
+        "segundos": 30
     }
 ]
