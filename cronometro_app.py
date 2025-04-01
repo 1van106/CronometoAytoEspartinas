@@ -12,6 +12,7 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QPixmap, QGuiApplication, QIcon
 
 from visualizacion import VentanaVisualizacion
+from ventana_controles import VentanaControles
 
 class CronometroApp(QMainWindow):
     def __init__(self):
@@ -199,7 +200,7 @@ class CronometroApp(QMainWindow):
         # --- MITAD DERECHA: Lista de temporizadores ---
         self.right_frame = QFrame()
         self.right_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.right_frame.setStyleSheet("background-color: #f8f9fa;")
+        self.right_frame.setStyleSheet("background-color: black;")
 
         # Layout para la lista de temporizadores
         self.right_layout = QVBoxLayout()
@@ -243,13 +244,20 @@ class CronometroApp(QMainWindow):
 
     def mostrar_pleno(self, tipo_pleno):
         cronometros = self.cargar_datos(tipo_pleno)
-        print(f"Cronómetros cargados: {cronometros}")  
+        print(f"Cronómetros cargados: {cronometros}")
 
         if cronometros:
-          self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)  # ✅ Se pasa tipo_pleno correctamente
+          # Crear la ventana de visualización
+          self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
           self.ventana_visualizacion.show()
+
+          # Crear la ventana de controles
+          self.ventana_controles = VentanaControles(cronometros, tipo_pleno)
+          self.ventana_controles.show()
+
         else:
           print("No se encontraron cronómetros para mostrar.")
+
 
     def guardar_datos(self):
       datos = []

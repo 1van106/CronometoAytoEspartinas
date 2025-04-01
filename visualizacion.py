@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout
 from PyQt6.QtCore import Qt
 
-
 class VentanaVisualizacion(QWidget):
     def __init__(self, cronometros, tipo_pleno):
         super().__init__()
@@ -10,6 +9,8 @@ class VentanaVisualizacion(QWidget):
         self.setStyleSheet("background-color: blue;")
 
         layout = QGridLayout(self)
+
+        self.cronometros = cronometros  # Aquí almacenamos la lista de cronómetros
 
         for i, cronometro in enumerate(cronometros):
             contenedor = QWidget()
@@ -31,3 +32,16 @@ class VentanaVisualizacion(QWidget):
             layout.addWidget(contenedor, fila, columna)
 
         self.setLayout(layout)
+
+    def actualizar_tiempo(self, index, minutos, segundos):
+        # Actualizar el cronómetro de acuerdo al índice
+        cronometro = self.cronometros[index]
+        cronometro['minutos'] = minutos
+        cronometro['segundos'] = segundos
+
+        # Encontrar el widget de tiempo correspondiente y actualizarlo
+        contenedor = self.findChild(QWidget, f"cronometro_{index}")
+        if contenedor:
+            tiempo_label = contenedor.findChild(QLabel)
+            if tiempo_label:
+                tiempo_label.setText(f"{minutos:02d}:{segundos:02d}")
