@@ -1,13 +1,14 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout
 from PyQt6.QtCore import Qt
 
-
 class VentanaVisualizacion(QWidget):
     def __init__(self, cronometros, tipo_pleno):
         super().__init__()
         self.setWindowTitle(f"Pleno {tipo_pleno.capitalize()}")
         self.setGeometry(100, 100, 600, 400)
         self.setStyleSheet("background-color: blue;")
+        self.cronometros = cronometros  # Guardar referencia a los cronómetros
+        self.labels_tiempos = []  # Guardar referencias a los labels de tiempo
 
         layout = QGridLayout(self)
 
@@ -23,6 +24,8 @@ class VentanaVisualizacion(QWidget):
             tiempo_label.setStyleSheet("font: 60px Arial; color: black; padding: 10px;")
             contenedor_layout.addWidget(tiempo_label)
 
+            self.labels_tiempos.append(tiempo_label)  # Guardar referencia al label
+
             contenedor.setStyleSheet("border: 2px solid black; padding: 10px; background-color: #f0f0f0;")
             contenedor.setLayout(contenedor_layout)
 
@@ -31,3 +34,8 @@ class VentanaVisualizacion(QWidget):
             layout.addWidget(contenedor, fila, columna)
 
         self.setLayout(layout)
+
+    def actualizar_tiempo(self, index, minutos, segundos):
+        """ Método para actualizar los tiempos en la interfaz """
+        if 0 <= index < len(self.labels_tiempos):
+            self.labels_tiempos[index].setText(f"{minutos:02d}:{segundos:02d}")
