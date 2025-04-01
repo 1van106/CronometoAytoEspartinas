@@ -18,7 +18,12 @@ class Almacenamiento:
     def cargar_cronometros(tipo_pleno):
         nombre_archivo = f"cronometros_{tipo_pleno}.json"
         try:
-            with open(nombre_archivo, "r") as file:
-                return json.load(file)
+          with open(nombre_archivo, "r") as file:
+            cronometros = json.load(file)
+            # Añadir los valores originales a cada cronómetro cargado
+            for cronometro in cronometros:
+                cronometro['minutos_originales'] = cronometro['minutos']
+                cronometro['segundos_originales'] = cronometro['segundos']
+            return cronometros
         except (FileNotFoundError, json.JSONDecodeError):
-            return []
+          return []

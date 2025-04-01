@@ -100,7 +100,7 @@ class CronometroApp(QMainWindow):
           self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
           self.ventana_visualizacion.show()
 
-          self.ventana_controles = VentanaControles(cronometros, tipo_pleno)
+          self.ventana_controles = VentanaControles(cronometros, tipo_pleno, self.sound_alarm)
           self.ventana_controles.tiempo_actualizado.connect(self.ventana_visualizacion.actualizar_tiempo)  # Conectar señal
           self.ventana_controles.show()
         else:
