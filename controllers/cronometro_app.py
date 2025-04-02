@@ -171,7 +171,8 @@ class CronometroApp(QMainWindow):
         self.pagina_dividida.titulo.setText(cronometro.nombre)
         self.minutos = cronometro.minutos
         self.segundos = cronometro.segundos
-        self.pagina_dividida.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+        self.pagina_dividida.min_display.setText(f"{self.minutos:02d}")  
+        self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}") 
         self.pagina_dividida.btn_agregar.setText("Actualizar")
         self.stacked_main.setCurrentIndex(1)
 
@@ -198,14 +199,16 @@ class CronometroApp(QMainWindow):
         else:
             self.segundos = max(0, min(59, self.segundos + valor))
 
-        self.pagina_dividida.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+        self.pagina_dividida.min_display.setText(f"{self.minutos:02d}")  
+        self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}")  
 
     def resetear_controles(self):
         """Resetea los controles a sus valores por defecto"""
         self.pagina_dividida.titulo.clear()
         self.minutos = 0
         self.segundos = 0
-        self.pagina_dividida.display.setText("00:00")
+        self.pagina_dividida.min_display.setText("00")
+        self.pagina_dividida.seg_display.setText("00")
 
     def resetear_edicion(self):
         """Termina el modo de edición"""

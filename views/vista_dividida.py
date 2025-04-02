@@ -18,15 +18,15 @@ class VistaDividida(QWidget):
         self.COLOR_BORDE = "#FF9F5E"  # Borde naranja
 
         self.init_ui()
-
+    
     def init_ui(self):
         # Configuración del fondo degradado
         self.setStyleSheet(f"""
-            background: qlineargradient(
-                x1:0, y1:0, x2:1, y2:1,
-                stop:0 {self.COLOR_FONDO}, 
-                stop:1 #2A1A0F
-            );
+        background: qlineargradient(
+          x1:0, y1:0, x2:1, y2:1,
+          stop:0 {self.COLOR_FONDO}, 
+          stop:1 #2A1A0F
+        );
         """)
 
         layout = QHBoxLayout()
@@ -37,31 +37,87 @@ class VistaDividida(QWidget):
         # Frame izquierdo (editor de cronómetro)
         self.left_frame = QFrame()
         self.left_frame.setStyleSheet(f"""
-            background: rgba(30, 20, 10, 0.6);
-            border-right: 1px solid {self.COLOR_BORDE};
+          background: rgba(30, 20, 10, 0.6);
+          border-right: 1px solid {self.COLOR_BORDE};
         """)
         left_layout = QVBoxLayout(self.left_frame)
         left_layout.setContentsMargins(20, 20, 20, 20)
         left_layout.setSpacing(15)
 
-        # Componentes del cronómetro
+        # Título
         self.titulo = QLineEdit("")
         self.titulo.setPlaceholderText("Nombre de la Intervención")
         self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.configurar_estilo_titulo()
         left_layout.addWidget(self.titulo)
 
-        self.display = QLabel("00:00")
-        self.display.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.configurar_estilo_display()
-        left_layout.addWidget(self.display, alignment=Qt.AlignmentFlag.AlignCenter)
+        # Contenedor del tiempo
+        tiempo_layout = QHBoxLayout()  # Aquí mantenemos el layout horizontal
+        left_layout.addLayout(tiempo_layout)
 
-        # Botones de control
-        self.btn_min_down = QPushButton("◄ Min")
-        self.btn_seg_down = QPushButton("◄ Seg")
-        self.btn_min_up = QPushButton("Min ►")
-        self.btn_seg_up = QPushButton("Seg ►")
-        self.configurar_botones_control(left_layout)
+        # Contenedor para "Min"
+        contenedor_min = QVBoxLayout()
+        
+    
+        # Etiqueta de "Min" arriba del contenedor
+        min_label = QLabel("MIN")
+        min_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        min_label.setStyleSheet(f"""
+          font: bold 20px 'Segoe UI';
+          color: {self.COLOR_TEXTO};
+          background: none;
+          border: none;
+        """)
+        contenedor_min.addWidget(min_label)
+
+        self.min_display = QLabel("00")
+        self.min_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.configurar_estilo_display(self.min_display)
+        contenedor_min.addWidget(self.min_display)
+
+        # Botones de control para Min
+        botones_min_layout = QHBoxLayout()
+        self.btn_min_down = QPushButton("-")
+        self.btn_min_up = QPushButton("+")
+        self.configurar_boton_control(self.btn_min_down)
+        self.configurar_boton_control(self.btn_min_up)
+        botones_min_layout.addWidget(self.btn_min_down)
+        botones_min_layout.addWidget(self.btn_min_up)
+        contenedor_min.addLayout(botones_min_layout)
+
+        tiempo_layout.addLayout(contenedor_min)
+
+        # Contenedor para "Seg"
+        contenedor_seg = QVBoxLayout()
+        
+    
+        # Etiqueta de "Seg" arriba del contenedor
+        seg_label = QLabel("SEG")
+        seg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        seg_label.setStyleSheet(f"""
+          font: bold 20px 'Segoe UI';
+          color: {self.COLOR_TEXTO};
+          background: none;
+          border: none;
+        """)
+        contenedor_seg.addWidget(seg_label)
+
+        self.seg_display = QLabel("00")
+        self.seg_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.configurar_estilo_display(self.seg_display)
+        contenedor_seg.addWidget(self.seg_display)
+
+        # Botones de control para Seg
+        botones_seg_layout = QHBoxLayout()
+        self.btn_seg_down = QPushButton("-")
+        self.btn_seg_up = QPushButton("+")
+        self.configurar_boton_control(self.btn_seg_down)
+        self.configurar_boton_control(self.btn_seg_up)
+        botones_seg_layout.addWidget(self.btn_seg_down)
+        botones_seg_layout.addWidget(self.btn_seg_up)
+        contenedor_seg.addLayout(botones_seg_layout)
+
+        tiempo_layout.addLayout(contenedor_seg)
 
         # Botón principal
         self.btn_agregar = QPushButton("AGREGAR")
@@ -73,8 +129,8 @@ class VistaDividida(QWidget):
         # Frame derecho (lista de temporizadores)
         self.right_frame = QFrame()
         self.right_frame.setStyleSheet(f"""
-            background: rgba(30, 20, 10, 0.6);
-            border-left: 1px solid {self.COLOR_BORDE};
+          background: rgba(30, 20, 10, 0.6);
+          border-left: 1px solid {self.COLOR_BORDE};
         """)
 
         self.right_layout = QVBoxLayout(self.right_frame)
@@ -82,27 +138,30 @@ class VistaDividida(QWidget):
 
         self.lista_temporizadores = QListWidget()
         self.lista_temporizadores.setStyleSheet("""
-            QListWidget {
-                background: transparent;
-                border: none;
-                outline: none;
-            }
-            QListWidget::item {
-                margin-bottom: 8px;
-            }
-            QListWidget::item:selected {
-                background: transparent;
-            }
+          QListWidget {
+            background: transparent;
+            border: none;
+            outline: none;
+          }
+          QListWidget::item {
+            margin-bottom: 8px;
+          }
+          QListWidget::item:selected {
+            background: transparent;
+          }
         """)
         self.right_layout.addWidget(self.lista_temporizadores)
 
         layout.addWidget(self.left_frame, stretch=1)
         layout.addWidget(self.right_frame, stretch=1)
 
+    
+
+
     def configurar_estilo_titulo(self):
         self.titulo.setStyleSheet(f"""
             QLineEdit {{
-                font: bold 16px 'Segoe UI';
+                font: bold 30px 'Segoe UI';
                 color: {self.COLOR_TEXTO};
                 padding: 12px;
                 border: 2px solid {self.COLOR_PRIMARIO};
@@ -115,18 +174,18 @@ class VistaDividida(QWidget):
             }}
         """)
 
-    def configurar_estilo_display(self):
-        self.display.setStyleSheet(f"""
+    def configurar_estilo_display(self, label):
+        label.setStyleSheet(f"""
             QLabel {{
-                font: bold 72px 'Segoe UI';
+                font: bold 90px 'Segoe UI';
                 color: {self.COLOR_PRIMARIO};
-                padding: 20px 40px;
+                padding: 10px 10px;
                 background: rgba(45, 45, 45, 0.7);
                 border-radius: 10px;
-                border: 3px solid {self.COLOR_PRIMARIO};
+                border: 3px dashed {self.COLOR_PRIMARIO};
             }}
         """)
-        self.display.setMinimumWidth(300)
+        
 
     def configurar_botones_control(self, layout):
         contenedor_controles = QWidget()
@@ -144,7 +203,7 @@ class VistaDividida(QWidget):
     def configurar_boton_control(self, boton):
         boton.setStyleSheet(f"""
             QPushButton {{
-                font: bold 12px 'Segoe UI';
+                font: bold 24px 'Segoe UI';
                 color: {self.COLOR_TEXTO};
                 background: {self.COLOR_PRIMARIO};
                 padding: 8px 12px;
