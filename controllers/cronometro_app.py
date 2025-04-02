@@ -94,20 +94,18 @@ class CronometroApp(QMainWindow):
         self.cargar_temporizadores()
 
     def mostrar_pleno(self, tipo_pleno):
-        # Usar Almacenamiento para cargar los cronómetros según el tipo de pleno
         cronometros = Almacenamiento.cargar_cronometros(tipo_pleno)
-        
+    
         if cronometros:
-            # Mostrar la ventana de visualización de los cronómetros
-            self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
-            self.ventana_visualizacion.show()
+          self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
+          self.ventana_visualizacion.show()
 
-             # Crear la ventana de controles
-            self.ventana_controles = VentanaControles(cronometros, tipo_pleno)
-            self.ventana_controles.show()
-
+          self.ventana_controles = VentanaControles(cronometros, tipo_pleno, self.sound_alarm)
+          self.ventana_controles.tiempo_actualizado.connect(self.ventana_visualizacion.actualizar_tiempo)  # Conectar señal
+          self.ventana_controles.show()
         else:
-            print(f"No se encontraron cronómetros para el tipo de pleno: {tipo_pleno}")
+          print(f"No se encontraron cronómetros para el tipo de pleno: {tipo_pleno}")
+
 
     def cargar_temporizadores(self):
         """Carga los temporizadores desde el archivo"""
