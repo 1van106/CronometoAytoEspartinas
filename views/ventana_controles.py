@@ -10,8 +10,7 @@ class VentanaControles(QMainWindow):
     def __init__(self, cronometros, tipo_pleno, sound_alarm):
         super().__init__()
         self.tipo_pleno = tipo_pleno
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)  # Eliminar el marco predeterminado
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Hacer fondo transparente
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
         self.resize(270, 820)
@@ -27,64 +26,20 @@ class VentanaControles(QMainWindow):
 
     def init_ui(self):
         
-        self.central_widget = QWidget(self) 
-        self.central_widget.setStyleSheet("""
-            background-color: #2B2D31;
-            border: 5px solid #FF9F5E;  # Borde personalizado
-            border-radius: 10px;
-        """)
-        
-        # Crear el layout principal
-        layout = QVBoxLayout(self.central_widget)
-
-        # Agregar la etiqueta de título
+        central_widget = QWidget()
+        layout = QVBoxLayout(central_widget)
+        central_widget.setStyleSheet("background-color: #2B2D31;border:3px solid #FF9F5E;")
         label = QLabel(f"Pleno {self.tipo_pleno}", self)
         label.setStyleSheet(f"""
-            font: bold 20px '{self.fuente_led.family()}';
+            font: bold 20px '{self.fuente_led.family()}'; 
             color: #FF9F5E;
             background-color:#2B2D31;
             text-align: center;
             padding: 10px;
         """)
         layout.addWidget(label)
-
-        # Lista de temporizadores (esto depende de lo que necesites agregar)
         self.lista_temporizadores = QListWidget()
         layout.addWidget(self.lista_temporizadores)
-
-        # Crear el botón de cierre en la parte superior derecha
-        close_button = QPushButton("X", self)
-        close_button.setFixedSize(30, 30)  # Ajustar el tamaño del botón
-        close_button.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                color: WHITE;
-                font: bold 38px 'Arial';
-                border: none;
-                padding: 0;
-            }
-            QPushButton:hover {
-                color: #E07A00;
-            }
-            QPushButton:pressed {
-                color: #C96900;
-            }
-        """)
-        close_button.clicked.connect(self.close)  # Cerrar la ventana al hacer clic
-
-        # Colocar el botón de cierre en la parte superior derecha
-        close_button.move(self.width() - 35, 5)
-
-        # Establecer el widget central de la ventana
-        self.setCentralWidget(self.central_widget)
-
-    def resizeEvent(self, event):
-        """Actualizar la posición del botón de cierre cuando la ventana se redimensiona"""
-        super().resizeEvent(event)
-        # Posicionar el botón de cierre siempre en la parte superior derecha
-        close_button = self.findChild(QPushButton)
-        if close_button:
-            close_button.move(self.centralWidget().width() - 35, 5)
 
 
 
@@ -137,7 +92,7 @@ class VentanaControles(QMainWindow):
             self.lista_temporizadores.addItem(item)
             self.lista_temporizadores.setItemWidget(item, contenedor)
 
-        self.setCentralWidget(self.central_widget)
+        self.setCentralWidget(central_widget)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
