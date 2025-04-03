@@ -16,6 +16,8 @@ from views.ventana_controles import VentanaControles
 class CronometroApp(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        
         self.configurar_ventana()
         self.inicializar_estados()
         self.inicializar_audio()
@@ -25,6 +27,7 @@ class CronometroApp(QMainWindow):
         self.setWindowTitle("Ayuntamiento de Espartinas")
         screen = QGuiApplication.primaryScreen().geometry()
         self.setGeometry(screen)
+        self.resize(1200, 800)
 
     def inicializar_estados(self):
         self.minutos = 0
@@ -171,7 +174,8 @@ class CronometroApp(QMainWindow):
         self.pagina_dividida.titulo.setText(cronometro.nombre)
         self.minutos = cronometro.minutos
         self.segundos = cronometro.segundos
-        self.pagina_dividida.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+        self.pagina_dividida.min_display.setText(f"{self.minutos:02d}")  
+        self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}") 
         self.pagina_dividida.btn_agregar.setText("Actualizar")
         self.stacked_main.setCurrentIndex(1)
 
@@ -198,14 +202,16 @@ class CronometroApp(QMainWindow):
         else:
             self.segundos = max(0, min(59, self.segundos + valor))
 
-        self.pagina_dividida.display.setText(f"{self.minutos:02d}:{self.segundos:02d}")
+        self.pagina_dividida.min_display.setText(f"{self.minutos:02d}")  
+        self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}")  
 
     def resetear_controles(self):
         """Resetea los controles a sus valores por defecto"""
         self.pagina_dividida.titulo.clear()
         self.minutos = 0
         self.segundos = 0
-        self.pagina_dividida.display.setText("00:00")
+        self.pagina_dividida.min_display.setText("00")
+        self.pagina_dividida.seg_display.setText("00")
 
     def resetear_edicion(self):
         """Termina el modo de edición"""

@@ -4,20 +4,29 @@ from views.visualizacion import VentanaVisualizacion
 
 class VentanaControles(QMainWindow):
     # Señal para sincronizar los cronómetros entre ventanas
-    tiempo_actualizado = pyqtSignal(int, int, int)  # (índice, minutos, segundos)
+    tiempo_actualizado = pyqtSignal(int, int, int)  
 
     def __init__(self, cronometros, tipo_pleno, sound_alarm):
         super().__init__()
         self.tipo_pleno = tipo_pleno
-        self.setWindowTitle("Controles de Cronómetros")
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.sound_alarm = sound_alarm
-        self.cronometros = cronometros  # Lista de cronómetros
+        self.cronometros = cronometros 
+        self.resize(270, 820)
         self.init_ui()
 
     def init_ui(self):
         central_widget = QWidget()
         layout = QVBoxLayout(central_widget)
-        label = QLabel(f"Visualización del pleno: {self.tipo_pleno}", self)
+        central_widget.setStyleSheet("background-color: white;border:3px solid black;")
+        label = QLabel(f"Pleno {self.tipo_pleno}", self)
+        label.setStyleSheet("""
+            font: bold 25px 'Segoe UI'; 
+            color: black;
+            background-color:white;
+            text-align: center;
+            padding: 10px;
+        """)
         layout.addWidget(label)
         self.lista_temporizadores = QListWidget()
         layout.addWidget(self.lista_temporizadores)
@@ -29,20 +38,34 @@ class VentanaControles(QMainWindow):
             contenedor = QWidget()
             contenedor_layout = QVBoxLayout(contenedor)
 
-            nombre_label = QLabel(cronometro['nombre'], alignment=Qt.AlignmentFlag.AlignCenter)
+            contenedor.setStyleSheet("""
+                background-color: white;
+                color:white;
+                font: bold 20px 'Segoe UI';
+                border: 1.5px solid black;                     
+                padding: 3px;
+                margin: 0;                     
+            """)
+
+            nombre_label = QLabel(cronometro['nombre'])
+            nombre_label.setStyleSheet("font: bold 20px 'Segoe UI'; color: black; background-color: white; border: none;")
             contenedor_layout.addWidget(nombre_label)
+            
 
             tiempo_label = QLabel(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}", alignment=Qt.AlignmentFlag.AlignCenter)
-            contenedor_layout.addWidget(tiempo_label)
+            
 
             botones_layout = QHBoxLayout()
             btn_play = QPushButton("Play")
+            self.aplicar_estilo_boton(btn_play)
             btn_play.clicked.connect(lambda _, c=cronometro, t=tiempo_label, index=i: self.iniciar_cronometro(c, t, index))
 
             btn_stop = QPushButton("Stop")
+            self.aplicar_estilo_boton(btn_stop)
             btn_stop.clicked.connect(lambda _, c=cronometro, index=i: self.detener_cronometro(c, index))
 
             btn_reset = QPushButton("Reset")
+            self.aplicar_estilo_boton(btn_reset)
             btn_reset.clicked.connect(lambda _, c=cronometro, t=tiempo_label, index=i: self.reset_cronometro(c, t, index))
 
             botones_layout.addWidget(btn_play)
@@ -58,6 +81,37 @@ class VentanaControles(QMainWindow):
             self.lista_temporizadores.setItemWidget(item, contenedor)
 
         self.setCentralWidget(central_widget)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.drag_position = event.globalPosition().toPoint()
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.MouseButton.LeftButton:
+            self.move(self.pos() + event.globalPosition().toPoint() - self.drag_position)
+            self.drag_position = event.globalPosition().toPoint()
+            event.accept()
+    
+    def aplicar_estilo_boton(self, boton):
+        """Aplica estilos a los botones de Play, Stop y Reset."""
+        boton.setStyleSheet("""
+            QPushButton {
+                background-color: #FF8C00;
+                color: white;
+                font: bold 14px 'Segoe UI';
+                padding: 5px;
+                border-radius: 5px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #E07A00;
+            }
+            QPushButton:pressed {
+                background-color: #C96900;
+            }
+        """)
+
 
     def iniciar_cronometro(self, cronometro, tiempo_label, index):
         if 'corriendo' not in cronometro:
