@@ -16,6 +16,8 @@ from views.ventana_controles import VentanaControles
 class CronometroApp(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        
         self.configurar_ventana()
         self.inicializar_estados()
         self.inicializar_audio()
@@ -25,6 +27,7 @@ class CronometroApp(QMainWindow):
         self.setWindowTitle("Ayuntamiento de Espartinas")
         screen = QGuiApplication.primaryScreen().geometry()
         self.setGeometry(screen)
+        self.resize(1200, 800)
 
     def inicializar_estados(self):
         self.minutos = 0

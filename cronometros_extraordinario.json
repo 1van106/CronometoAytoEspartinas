@@ -18,5 +18,10 @@
         "nombre": "Intervenci\u00f3n CA",
         "minutos": 4,
         "segundos": 0
+    },
+    {
+        "nombre": "PRUEBA",
+        "minutos": 0,
+        "segundos": 3
     }
 ]

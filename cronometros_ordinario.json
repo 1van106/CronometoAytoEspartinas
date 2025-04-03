@@ -1,32 +1,42 @@
 [
     {
-        "nombre": "1 --",
-        "minutos": 0,
-        "segundos": 5
-    },
-    {
-        "nombre": "prueba1",
-        "minutos": 0,
-        "segundos": 5
-    },
-    {
-        "nombre": "gupui9pu",
-        "minutos": 0,
-        "segundos": 3
-    },
-    {
-        "nombre": "ghvjgc",
-        "minutos": 2,
-        "segundos": 1
-    },
-    {
-        "nombre": "hhhhh",
-        "minutos": 3,
+        "nombre": "Intervencion PSOE",
+        "minutos": 4,
         "segundos": 0
     },
     {
-        "nombre": "1\u00aaIntervenci\u00f3n PSOE",
+        "nombre": "Intervencion PP",
         "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion VOX",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion CA",
+        "minutos": 4,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion PSOE",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion PP",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion VOX",
+        "minutos": 1,
+        "segundos": 0
+    },
+    {
+        "nombre": "Intervencion CA",
+        "minutos": 1,
         "segundos": 0
     }
 ]
