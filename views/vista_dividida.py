@@ -1,9 +1,9 @@
 import os
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-                             QLineEdit, QPushButton, QListWidget, QFrame,
+                             QLineEdit, QPushButton, QListWidget, QFrame,QGraphicsDropShadowEffect,
                              QListWidgetItem)
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QFontDatabase, QFont, QColor
 
 
 class VistaDividida(QWidget):
@@ -17,17 +17,21 @@ class VistaDividida(QWidget):
         self.COLOR_TEXTO_OSCURO = "#1A120B"  # Para texto sobre naranja
         self.COLOR_BORDE = "#FF9F5E"  # Borde naranja
 
+        font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
+        font_families = QFontDatabase.applicationFontFamilies(font_id)
+        if font_families:
+          self.fuente_led = QFont(font_families[0], 90)
+        else:
+          self.fuente_led = QFont("Arial", 90)
+        
+        
+
         self.init_ui()
     
     def init_ui(self):
-        # Configuración del fondo degradado
-        self.setStyleSheet(f"""
-        background: qlineargradient(
-          x1:0, y1:0, x2:1, y2:1,
-          stop:0 {self.COLOR_FONDO}, 
-          stop:1 #2A1A0F
-        );
-        """)
+        self.setStyleSheet("background: #2B2D31")
+        self.resize(400, 800)
+        self.show()
 
         layout = QHBoxLayout()
         self.setLayout(layout)
@@ -37,7 +41,7 @@ class VistaDividida(QWidget):
         # Frame izquierdo (editor de cronómetro)
         self.left_frame = QFrame()
         self.left_frame.setStyleSheet(f"""
-          background: rgba(30, 20, 10, 0.6);
+          background: #2B2D31;
           border-right: 1px solid {self.COLOR_BORDE};
         """)
         left_layout = QVBoxLayout(self.left_frame)
@@ -46,7 +50,7 @@ class VistaDividida(QWidget):
 
         # Título
         self.titulo = QLineEdit("")
-        self.titulo.setPlaceholderText("Nombre de la Intervención")
+        self.titulo.setPlaceholderText("Nombre de la Intervencion")
         self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.configurar_estilo_titulo()
         left_layout.addWidget(self.titulo)
@@ -63,8 +67,8 @@ class VistaDividida(QWidget):
         min_label = QLabel("MIN")
         min_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         min_label.setStyleSheet(f"""
-          font: bold 20px 'Segoe UI';
-          color: {self.COLOR_TEXTO};
+          font: bold 40px '{self.fuente_led.family()}';
+          color: white;
           background: none;
           border: none;
         """)
@@ -95,8 +99,8 @@ class VistaDividida(QWidget):
         seg_label = QLabel("SEG")
         seg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         seg_label.setStyleSheet(f"""
-          font: bold 20px 'Segoe UI';
-          color: {self.COLOR_TEXTO};
+          font: bold 40px '{self.fuente_led.family()}';
+          color: white;
           background: none;
           border: none;
         """)
@@ -129,7 +133,7 @@ class VistaDividida(QWidget):
         # Frame derecho (lista de temporizadores)
         self.right_frame = QFrame()
         self.right_frame.setStyleSheet(f"""
-          background: rgba(30, 20, 10, 0.6);
+          background:#2B2D31;
           border-left: 1px solid {self.COLOR_BORDE};
         """)
 
@@ -161,26 +165,26 @@ class VistaDividida(QWidget):
     def configurar_estilo_titulo(self):
         self.titulo.setStyleSheet(f"""
             QLineEdit {{
-                font: bold 30px 'Segoe UI';
-                color: {self.COLOR_TEXTO};
+                font: bold 40px '{self.fuente_led.family()}';
+                color: white;
                 padding: 12px;
                 border: 2px solid {self.COLOR_PRIMARIO};
                 border-radius: 6px;
-                background: rgba(45, 45, 45, 0.7);
+                background: transparent;
             }}
             QLineEdit:focus {{
                 border: 2px solid {self.COLOR_SECUNDARIO};
-                background: rgba(45, 45, 45, 0.9);
+                background: transparent;
             }}
         """)
 
     def configurar_estilo_display(self, label):
+        label.setFont(self.fuente_led)
         label.setStyleSheet(f"""
             QLabel {{
-                font: bold 90px 'Segoe UI';
                 color: {self.COLOR_PRIMARIO};
                 padding: 10px 10px;
-                background: rgba(45, 45, 45, 0.7);
+                background:trasparent;
                 border-radius: 10px;
                 border: 3px dashed {self.COLOR_PRIMARIO};
             }}
@@ -203,7 +207,7 @@ class VistaDividida(QWidget):
     def configurar_boton_control(self, boton):
         boton.setStyleSheet(f"""
             QPushButton {{
-                font: bold 24px 'Segoe UI';
+                font: bold 40px '{self.fuente_led.family()}';
                 color: {self.COLOR_TEXTO};
                 background: {self.COLOR_PRIMARIO};
                 padding: 8px 12px;
@@ -215,15 +219,15 @@ class VistaDividida(QWidget):
                 background: {self.COLOR_SECUNDARIO};
             }}
             QPushButton:pressed {{
-                background: #E67329;
+                background:  {self.COLOR_SECUNDARIO};
             }}
         """)
 
     def configurar_boton_principal(self, boton):
         boton.setStyleSheet(f"""
             QPushButton {{
-                font: bold 14px 'Segoe UI';
-                color: {self.COLOR_TEXTO_OSCURO};
+                font: bold 40px '{self.fuente_led.family()}';
+                color: {self.COLOR_TEXTO};
                 background: {self.COLOR_PRIMARIO};
                 padding: 12px 24px;
                 border: none;
@@ -252,7 +256,7 @@ class VistaDividida(QWidget):
         """Crea un widget de temporizador con diseño moderno"""
         widget = QWidget()
         widget.setStyleSheet(f"""
-            background: rgba(30, 20, 10, 0.8);
+            background: transparent;
             border: 2px solid {self.COLOR_PRIMARIO};
             border-radius: 8px;
             padding: 12px;
@@ -265,27 +269,29 @@ class VistaDividida(QWidget):
         # Título del temporizador
         nombre_label = QLabel(cronometro.nombre)
         nombre_label.setStyleSheet(f"""
-            font: bold 18px 'Segoe UI';
-            color: {self.COLOR_PRIMARIO};
+            font: bold 40px '{self.fuente_led.family()}';
+            color:{self.COLOR_TEXTO};
             padding-bottom: 5px;
-            border-bottom: 1px solid {self.COLOR_PRIMARIO};
+            border: 2px solid {self.COLOR_PRIMARIO};
         """)
         nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(nombre_label)
 
         # Tiempo del temporizador
         tiempo_label = QLabel(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
+        tiempo_label.setFont(self.fuente_led)
         tiempo_label.setStyleSheet(f"""
-            font: 32px 'Segoe UI';
-            color: {self.COLOR_TEXTO};
-            padding: 5px;
+            color: {self.COLOR_PRIMARIO};
+            padding: 0px;
+            margin:0;
+            border: 2px dashed {self.COLOR_PRIMARIO};
         """)
         tiempo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(tiempo_label)
 
         # Botones de acción
         botones_layout = QHBoxLayout()
-        botones_layout.setContentsMargins(0, 10, 0, 0)
+        botones_layout.setContentsMargins(0, 0, 10, 0)
         botones_layout.setSpacing(10)
 
         # Botón Editar
@@ -321,7 +327,7 @@ class VistaDividida(QWidget):
             btn_eliminar.setText("X")
         btn_eliminar.setStyleSheet(f"""
             QPushButton {{
-                background: #E74C3C;
+                background:  {self.COLOR_PRIMARIO};
                 border: none;
                 border-radius: 4px;
                 padding: 6px;
@@ -329,6 +335,7 @@ class VistaDividida(QWidget):
                 max-width: 32px;
                 min-height: 32px;
                 max-height: 32px;
+                
             }}
             QPushButton:hover {{
                 background: #FF6B5B;
@@ -339,7 +346,7 @@ class VistaDividida(QWidget):
         botones_layout.addStretch()
         botones_layout.addWidget(btn_editar)
         botones_layout.addWidget(btn_eliminar)
-        botones_layout.addStretch()
+        
 
         layout.addLayout(botones_layout)
 

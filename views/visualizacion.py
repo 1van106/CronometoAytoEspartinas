@@ -1,9 +1,18 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import  QFontDatabase, QFont
 
 class VentanaVisualizacion(QWidget):
     def __init__(self, cronometros, tipo_pleno):
         super().__init__()
+
+        font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
+        font_families = QFontDatabase.applicationFontFamilies(font_id)
+        if font_families:
+          self.fuente_led = QFont(font_families[0], 90)
+        else:
+          self.fuente_led = QFont("Arial", 90)  
+
         self.setWindowTitle(f"Pleno {tipo_pleno.capitalize()}")
         self.setGeometry(100, 100, 600, 400)
         self.setStyleSheet("background-color: black;")
@@ -17,7 +26,7 @@ class VentanaVisualizacion(QWidget):
             contenedor_layout = QVBoxLayout(contenedor)
 
             nombre_label = QLabel(cronometro["nombre"])
-            nombre_label.setStyleSheet("font: bold 40px Arial; color: black; background-color: #f0f0f0; border: none;")
+            nombre_label.setStyleSheet("font: bold 40px '{self.fuente_led.family()}'; color: black; background-color: #f0f0f0; border: none;")
             contenedor_layout.addWidget(nombre_label)
 
             tiempo_label = QLabel(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}", alignment=Qt.AlignmentFlag.AlignCenter)

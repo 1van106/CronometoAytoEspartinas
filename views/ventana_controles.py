@@ -1,5 +1,6 @@
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
+from PyQt6.QtGui import  QFontDatabase, QFont
 from views.visualizacion import VentanaVisualizacion
 
 class VentanaControles(QMainWindow):
@@ -9,27 +10,81 @@ class VentanaControles(QMainWindow):
     def __init__(self, cronometros, tipo_pleno, sound_alarm):
         super().__init__()
         self.tipo_pleno = tipo_pleno
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)  # Eliminar el marco predeterminado
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Hacer fondo transparente
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
         self.resize(270, 820)
+
+        font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
+        font_families = QFontDatabase.applicationFontFamilies(font_id)
+        if font_families:
+          self.fuente_led = QFont(font_families[0], 90)
+        else:
+          self.fuente_led = QFont("Arial", 90) 
+
         self.init_ui()
 
     def init_ui(self):
-        central_widget = QWidget()
-        layout = QVBoxLayout(central_widget)
-        central_widget.setStyleSheet("background-color: white;border:3px solid black;")
+        
+        self.central_widget = QWidget(self) 
+        self.central_widget.setStyleSheet("""
+            background-color: #2B2D31;
+            border: 5px solid #FF9F5E;  # Borde personalizado
+            border-radius: 10px;
+        """)
+        
+        # Crear el layout principal
+        layout = QVBoxLayout(self.central_widget)
+
+        # Agregar la etiqueta de título
         label = QLabel(f"Pleno {self.tipo_pleno}", self)
-        label.setStyleSheet("""
-            font: bold 25px 'Segoe UI'; 
-            color: black;
-            background-color:white;
+        label.setStyleSheet(f"""
+            font: bold 20px '{self.fuente_led.family()}';
+            color: #FF9F5E;
+            background-color:#2B2D31;
             text-align: center;
             padding: 10px;
         """)
         layout.addWidget(label)
+
+        # Lista de temporizadores (esto depende de lo que necesites agregar)
         self.lista_temporizadores = QListWidget()
         layout.addWidget(self.lista_temporizadores)
+
+        # Crear el botón de cierre en la parte superior derecha
+        close_button = QPushButton("X", self)
+        close_button.setFixedSize(30, 30)  # Ajustar el tamaño del botón
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: WHITE;
+                font: bold 38px 'Arial';
+                border: none;
+                padding: 0;
+            }
+            QPushButton:hover {
+                color: #E07A00;
+            }
+            QPushButton:pressed {
+                color: #C96900;
+            }
+        """)
+        close_button.clicked.connect(self.close)  # Cerrar la ventana al hacer clic
+
+        # Colocar el botón de cierre en la parte superior derecha
+        close_button.move(self.width() - 35, 5)
+
+        # Establecer el widget central de la ventana
+        self.setCentralWidget(self.central_widget)
+
+    def resizeEvent(self, event):
+        """Actualizar la posición del botón de cierre cuando la ventana se redimensiona"""
+        super().resizeEvent(event)
+        # Posicionar el botón de cierre siempre en la parte superior derecha
+        close_button = self.findChild(QPushButton)
+        if close_button:
+            close_button.move(self.centralWidget().width() - 35, 5)
 
 
 
@@ -38,17 +93,19 @@ class VentanaControles(QMainWindow):
             contenedor = QWidget()
             contenedor_layout = QVBoxLayout(contenedor)
 
-            contenedor.setStyleSheet("""
-                background-color: white;
-                color:white;
-                font: bold 20px 'Segoe UI';
+            contenedor.setStyleSheet(f"""
+                background-color: #2B2D31;
+                color:#FF9F5E;
+                font: bold 40px '{self.fuente_led.family()}';
                 border: 1.5px solid black;                     
                 padding: 3px;
                 margin: 0;                     
             """)
 
             nombre_label = QLabel(cronometro['nombre'])
-            nombre_label.setStyleSheet("font: bold 20px 'Segoe UI'; color: black; background-color: white; border: none;")
+            nombre_label.setStyleSheet(f"""
+                font: bold 20px '{self.fuente_led.family()}';color: #FF9F5E; background-color:  #2B2D31; border: none;
+                """)
             contenedor_layout.addWidget(nombre_label)
             
 
@@ -80,7 +137,7 @@ class VentanaControles(QMainWindow):
             self.lista_temporizadores.addItem(item)
             self.lista_temporizadores.setItemWidget(item, contenedor)
 
-        self.setCentralWidget(central_widget)
+        self.setCentralWidget(self.central_widget)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -95,21 +152,21 @@ class VentanaControles(QMainWindow):
     
     def aplicar_estilo_boton(self, boton):
         """Aplica estilos a los botones de Play, Stop y Reset."""
-        boton.setStyleSheet("""
-            QPushButton {
-                background-color: #FF8C00;
-                color: white;
-                font: bold 14px 'Segoe UI';
+        boton.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #FF9F5E;
+                color:  #2B2D31;
+                font: bold 20px '{self.fuente_led.family()}';
                 padding: 5px;
                 border-radius: 5px;
                 border: none;
-            }
-            QPushButton:hover {
+            }}
+            QPushButton:hover {{
                 background-color: #E07A00;
-            }
-            QPushButton:pressed {
+            }}
+            QPushButton:pressed {{
                 background-color: #C96900;
-            }
+            }}
         """)
 
 
