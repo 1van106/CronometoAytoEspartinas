@@ -3,9 +3,6 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QFontDatabase, QFont
 from controllers.cronometro_app import CronometroApp
 
-
-
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ventana = CronometroApp()  

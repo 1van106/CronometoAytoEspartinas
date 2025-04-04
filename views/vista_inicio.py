@@ -52,6 +52,8 @@ class VistaInicio(QWidget):
         # Espacio flexible inferior reducido para subir el contenido
         layout.addStretch(2)
 
+########################################################################################################
+
     def cargar_logo(self):
         logo_path = os.path.join("assets", "logo_espartinas.png")
         if not os.path.exists(logo_path):
@@ -65,6 +67,8 @@ class VistaInicio(QWidget):
                               Qt.TransformationMode.SmoothTransformation)
             )
             self.logo_label.setFixedSize(400, 400)
+
+########################################################################################################
 
     def paintEvent(self, event):
         """Dibuja el fondo con transparencia"""

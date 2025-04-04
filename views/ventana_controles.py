@@ -24,6 +24,8 @@ class VentanaControles(QMainWindow):
 
         self.init_ui()
 
+########################################################################################################
+
     def init_ui(self):
         
         central_widget = QWidget()
@@ -40,9 +42,6 @@ class VentanaControles(QMainWindow):
         layout.addWidget(label)
         self.lista_temporizadores = QListWidget()
         layout.addWidget(self.lista_temporizadores)
-
-
-
 
         for i, cronometro in enumerate(self.cronometros):
             contenedor = QWidget()
@@ -62,10 +61,8 @@ class VentanaControles(QMainWindow):
                 font: bold 20px '{self.fuente_led.family()}';color: #FF9F5E; background-color:  #2B2D31; border: none;
                 """)
             contenedor_layout.addWidget(nombre_label)
-            
 
             tiempo_label = QLabel(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}", alignment=Qt.AlignmentFlag.AlignCenter)
-            
 
             botones_layout = QHBoxLayout()
             btn_play = QPushButton("Play")
@@ -86,7 +83,6 @@ class VentanaControles(QMainWindow):
 
             contenedor_layout.addLayout(botones_layout)
 
-
             item = QListWidgetItem()
             item.setSizeHint(contenedor.sizeHint())
             self.lista_temporizadores.addItem(item)
@@ -94,17 +90,23 @@ class VentanaControles(QMainWindow):
 
         self.setCentralWidget(central_widget)
 
+########################################################################################################
+
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drag_position = event.globalPosition().toPoint()
             event.accept()
+
+########################################################################################################
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.MouseButton.LeftButton:
             self.move(self.pos() + event.globalPosition().toPoint() - self.drag_position)
             self.drag_position = event.globalPosition().toPoint()
             event.accept()
-    
+
+########################################################################################################
+
     def aplicar_estilo_boton(self, boton):
         """Aplica estilos a los botones de Play, Stop y Reset."""
         boton.setStyleSheet(f"""
@@ -124,6 +126,7 @@ class VentanaControles(QMainWindow):
             }}
         """)
 
+########################################################################################################
 
     def iniciar_cronometro(self, cronometro, tiempo_label, index):
         if 'corriendo' not in cronometro:
@@ -140,6 +143,7 @@ class VentanaControles(QMainWindow):
             # Cambiar el color a blanco
             cronometro["contenedor"].setStyleSheet("background-color: #FFFFFF; border: 2px solid black;")
 
+########################################################################################################
 
     def detener_cronometro(self, cronometro, index):
         if cronometro["corriendo"]:
@@ -149,6 +153,8 @@ class VentanaControles(QMainWindow):
           self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
 
           cronometro["contenedor"].setStyleSheet("background-color:  #f0f0f0; border: 2px solid black;")
+
+########################################################################################################
 
     def reset_cronometro(self, cronometro, tiempo_label, index):
         # Usamos los valores originales para restaurar el tiempo
@@ -162,10 +168,13 @@ class VentanaControles(QMainWindow):
         tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
         self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])  # Emitir señal
 
-    
+########################################################################################################
+
     def sonar_alarma(self):
         if self.sound_alarm:
           self.sound_alarm.play()
+
+########################################################################################################
 
     def actualizar_tiempo(self, cronometro, tiempo_label, index):
         if cronometro["segundos"] > 0:
