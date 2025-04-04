@@ -141,6 +141,12 @@ class VistaDividida(QWidget):
         self.right_layout.setContentsMargins(10, 10, 10, 10)
 
         self.lista_temporizadores = QListWidget()
+        self.lista_temporizadores.setDragDropMode(QListWidget.DragDropMode.InternalMove)
+        self.lista_temporizadores.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.lista_temporizadores.model().rowsMoved.connect(self.actualizar_numeracion_temporizadores)
+        self.lista_temporizadores.setCursor(Qt.CursorShape.OpenHandCursor)
+
+
         self.lista_temporizadores.setStyleSheet("""
           QListWidget {
             background: transparent;
@@ -153,6 +159,10 @@ class VistaDividida(QWidget):
           QListWidget::item:selected {
             background: transparent;
           }
+          QListWidget::item:selected {
+            background-color: rgba(255, 159, 94, 0.2);
+            border: 1px dashed #FF9F5E;
+          }
         """)
         self.right_layout.addWidget(self.lista_temporizadores)
 
@@ -161,6 +171,15 @@ class VistaDividida(QWidget):
 
     
 
+    def actualizar_numeracion_temporizadores(self):
+      for index in range(self.lista_temporizadores.count()):
+        item = self.lista_temporizadores.item(index)
+        widget = self.lista_temporizadores.itemWidget(item)
+        if widget:
+            numero_label = widget.findChild(QLabel, "numero_label")
+            if numero_label:
+                numero_label.setText(f"#{index + 1}")
+      self.lista_temporizadores.update()
 
     def configurar_estilo_titulo(self):
         self.titulo.setStyleSheet(f"""
@@ -251,6 +270,7 @@ class VistaDividida(QWidget):
         self.lista_temporizadores.addItem(item)
         self.lista_temporizadores.setItemWidget(item, widget)
         cronometro.widget = widget
+        
 
     def crear_widget_temporizador(self, cronometro, controlador):
         """Crea un widget de temporizador con diseño moderno"""
@@ -265,6 +285,17 @@ class VistaDividida(QWidget):
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(8)
+
+        # Número del temporizador
+        numero_label = QLabel(f"#{self.lista_temporizadores.count() + 1}")
+        numero_label.setObjectName("numero_label")
+        numero_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        numero_label.setStyleSheet(f"""
+            font: bold 24px '{self.fuente_led.family()}';
+            color: {self.COLOR_SECUNDARIO};
+            padding: 0;
+        """)
+        layout.addWidget(numero_label)
 
         # Título del temporizador
         nombre_label = QLabel(cronometro.nombre)
@@ -289,6 +320,10 @@ class VistaDividida(QWidget):
         tiempo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(tiempo_label)
 
+        # Guardar referencias
+        widget.label_nombre = nombre_label
+        widget.label_tiempo = tiempo_label
+
         # Botones de acción
         botones_layout = QHBoxLayout()
         botones_layout.setContentsMargins(0, 0, 10, 0)
@@ -296,6 +331,7 @@ class VistaDividida(QWidget):
 
         # Botón Editar
         btn_editar = QPushButton()
+        btn_editar.setCursor(Qt.CursorShape.ArrowCursor)
         if os.path.exists("assets/lapiz.png"):
             btn_editar.setIcon(QIcon("assets/lapiz.png"))
             btn_editar.setToolTip("Editar")
@@ -317,9 +353,12 @@ class VistaDividida(QWidget):
             }}
         """)
         btn_editar.clicked.connect(lambda: controlador.editar_temporizador(cronometro))
+        
 
         # Botón Eliminar
         btn_eliminar = QPushButton()
+        btn_eliminar.setCursor(Qt.CursorShape.ArrowCursor)
+
         if os.path.exists("assets/papelera.png"):
             btn_eliminar.setIcon(QIcon("assets/papelera.png"))
             btn_eliminar.setToolTip("Eliminar")
@@ -355,7 +394,5 @@ class VistaDividida(QWidget):
     def actualizar_temporizador_ui(self, cronometro):
         """Actualiza la UI de un temporizador existente"""
         if cronometro.widget:
-            labels = cronometro.widget.findChildren(QLabel)
-            if len(labels) >= 2:
-                labels[0].setText(cronometro.nombre)
-                labels[1].setText(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
+          cronometro.widget.label_nombre.setText(cronometro.nombre)
+          cronometro.widget.label_tiempo.setText(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
