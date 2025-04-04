@@ -2,7 +2,7 @@ import os
 import pygame
 from PyQt6.QtWidgets import (QMainWindow, QMenuBar, QMenu, QStackedWidget,
                              QMessageBox, QApplication)
-from PyQt6.QtGui import QFont, QGuiApplication
+from PyQt6.QtGui import QFont, QGuiApplication, QAction
 from PyQt6.QtGui import QIcon
 
 from models.almacenamiento import Almacenamiento
@@ -87,6 +87,9 @@ class CronometroApp(QMainWindow):
     def crear_menu(self):
         barra_menu = self.menuBar()
 
+        # Configuración clave para mostrar texto
+        barra_menu.setNativeMenuBar(False)  # Desactiva menús nativos
+
         # Menú Admin
         admin_menu = barra_menu.addMenu("Admin")
         admin_menu.addAction("Pleno Ordinario").triggered.connect(lambda: self.mostrar_editor("ordinario"))
@@ -98,8 +101,38 @@ class CronometroApp(QMainWindow):
         visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(
             lambda: self.mostrar_pleno("extraordinario"))
 
+        # Opción Ayuda
+        help_menu = barra_menu.addAction("Ayuda")
+
         # Opción Salir
-        barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
+        # barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
+
+        salir_action = QAction(" Salir ", self)  # Espacio inicial importante
+        salir_action.setIcon(QIcon("assets/exit_icon.png"))
+        salir_action.triggered.connect(QApplication.instance().quit)
+
+        # Añadir a la barra
+        barra_menu.addAction(salir_action)
+
+        # Stylesheet completo para todos los efectos visuales
+        barra_menu.setStyleSheet("""
+                QMenuBar {
+                    background-color: #F0F0F0;  /* Color de fondo general */
+                    spacing: 5px;
+                }
+                QMenuBar::item {
+                    padding: 5px 15px 5px 10px;  /* Ajuste de espacios */
+                    background: transparent;
+                    color: black;
+                }
+                QMenuBar::item:selected {
+                    background-color: #C0C0C0;  /* Color al seleccionar */
+                    border-radius: 3px;
+                }
+                QMenuBar::icon {
+                    left: 60px;  /* Posición del icono respecto al texto */
+                }
+            """)
 
 ########################################################################################################
 

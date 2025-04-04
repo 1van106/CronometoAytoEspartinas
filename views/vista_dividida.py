@@ -61,7 +61,6 @@ class VistaDividida(QWidget):
 
         # Contenedor para "Min"
         contenedor_min = QVBoxLayout()
-        
     
         # Etiqueta de "Min" arriba del contenedor
         min_label = QLabel("MIN")
@@ -93,8 +92,7 @@ class VistaDividida(QWidget):
 
         # Contenedor para "Seg"
         contenedor_seg = QVBoxLayout()
-        
-    
+
         # Etiqueta de "Seg" arriba del contenedor
         seg_label = QLabel("SEG")
         seg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
