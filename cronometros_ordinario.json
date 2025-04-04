@@ -2,41 +2,49 @@
     {
         "nombre": "Intervencion PSOE",
         "minutos": 4,
-        "segundos": 0
+        "segundos": 4,
+        "numeracion": 1
     },
     {
         "nombre": "Intervencion PP",
         "minutos": 4,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 2
     },
     {
         "nombre": "Intervencion VOX",
         "minutos": 4,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 3
     },
     {
         "nombre": "Intervencion CA",
         "minutos": 4,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 4
     },
     {
         "nombre": "Intervencion PSOE",
         "minutos": 1,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 5
     },
     {
         "nombre": "Intervencion PP",
         "minutos": 1,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 6
     },
     {
         "nombre": "Intervencion VOX",
         "minutos": 1,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 7
     },
     {
         "nombre": "Intervencion CA",
         "minutos": 1,
-        "segundos": 0
+        "segundos": 0,
+        "numeracion": 8
     }
 ]

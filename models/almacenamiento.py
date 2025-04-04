@@ -8,9 +8,10 @@ class Almacenamiento:
         datos = [{
             "nombre": c.nombre,
             "minutos": c.minutos,
-            "segundos": c.segundos
-        } for c in cronometros]
-
+            "segundos": c.segundos,
+            "numeracion": i + 1  # "i" es el índice proporcionado por enumerate
+        } for i, c in enumerate(cronometros)]  # Usamos enumerate para obtener el índice 'i' y el cronómetro 'c'
+        
         with open(nombre_archivo, "w") as file:
             json.dump(datos, file, indent=4)
 
@@ -22,10 +23,14 @@ class Almacenamiento:
         try:
           with open(nombre_archivo, "r") as file:
             cronometros = json.load(file)
-            # Añadir los valores originales a cada cronómetro cargado
+
+            # Añadir valores originales
             for cronometro in cronometros:
                 cronometro['minutos_originales'] = cronometro['minutos']
                 cronometro['segundos_originales'] = cronometro['segundos']
+
+            # Ordenar por numeración si existe
+            cronometros.sort(key=lambda x: x.get("numeracion", 0))
             return cronometros
         except (FileNotFoundError, json.JSONDecodeError):
           return []

@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QFontDatabase, QFont, QColor
 
+########################################################################################################
 
 class VistaDividida(QWidget):
     def __init__(self):
@@ -170,7 +171,7 @@ class VistaDividida(QWidget):
         layout.addWidget(self.right_frame, stretch=1)
 
 
-    
+########################################################################################################    
 
     def actualizar_numeracion_temporizadores(self):
       for index in range(self.lista_temporizadores.count()):
@@ -182,6 +183,8 @@ class VistaDividida(QWidget):
                 numero_label.setText(f"#{index + 1}")
       self.lista_temporizadores.update()
 
+
+########################################################################################################
 
     def configurar_estilo_titulo(self):
         self.titulo.setStyleSheet(f"""
@@ -199,6 +202,7 @@ class VistaDividida(QWidget):
             }}
         """)
 
+########################################################################################################
 
     def configurar_estilo_display(self, label):
         label.setFont(self.fuente_led)
@@ -212,7 +216,7 @@ class VistaDividida(QWidget):
             }}
         """)
 
-
+########################################################################################################
 
     def configurar_botones_control(self, layout):
         contenedor_controles = QWidget()
@@ -227,6 +231,7 @@ class VistaDividida(QWidget):
 
         layout.addWidget(contenedor_controles, alignment=Qt.AlignmentFlag.AlignCenter)
 
+########################################################################################################
 
     def configurar_boton_control(self, boton):
         boton.setStyleSheet(f"""
@@ -247,6 +252,7 @@ class VistaDividida(QWidget):
             }}
         """)
 
+########################################################################################################
 
     def configurar_boton_principal(self, boton):
         boton.setStyleSheet(f"""
@@ -268,6 +274,7 @@ class VistaDividida(QWidget):
             }}
         """)
 
+########################################################################################################
 
     def agregar_temporizador_ui(self, cronometro, controlador):
         """Agrega un temporizador a la interfaz con estilo moderno"""
@@ -278,7 +285,7 @@ class VistaDividida(QWidget):
         self.lista_temporizadores.setItemWidget(item, widget)
         cronometro.widget = widget
         
-
+########################################################################################################
 
     def crear_widget_temporizador(self, cronometro, controlador):
         """Crea un widget de temporizador con diseño moderno"""
@@ -399,6 +406,7 @@ class VistaDividida(QWidget):
 
         return widget
 
+########################################################################################################
 
 
     def actualizar_temporizador_ui(self, cronometro):

@@ -2,10 +2,11 @@ from PyQt6.QtCore import QTimer
 
 
 class Cronometro:
-    def __init__(self, nombre, minutos, segundos):
+    def __init__(self, nombre, minutos, segundos, numeracion=None):
         self.nombre = nombre
         self.minutos = minutos
         self.segundos = segundos
+        self.numeracion = numeracion
         self.corriendo = False
         self.timer = None
         self.widget = None

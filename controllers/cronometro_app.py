@@ -82,6 +82,10 @@ class CronometroApp(QMainWindow):
         # Botón principal
         vista.btn_agregar.clicked.connect(self.accion_principal_temporizador)
 
+        # ⬇️ Nueva conexión para detectar reordenamiento manual
+        vista.lista_temporizadores.model().rowsMoved.connect(self.reordenar_temporizadores)
+
+
 ########################################################################################################
 
     def crear_menu(self):
@@ -133,16 +137,22 @@ class CronometroApp(QMainWindow):
         self.pagina_dividida.lista_temporizadores.clear()
 
         for item in datos:
-            self.agregar_temporizador_desde_datos(item["nombre"], item["minutos"], item["segundos"])
+            self.agregar_temporizador_desde_datos(
+                item["nombre"], 
+                item["minutos"], 
+                item["segundos"], 
+                item.get("numeracion")
+            )
 
 ########################################################################################################
 
-    def agregar_temporizador_desde_datos(self, nombre, minutos, segundos):
+    def agregar_temporizador_desde_datos(self, nombre, minutos, segundos, numeracion=None):
         """Agrega un temporizador desde datos existentes"""
         cronometro = Cronometro(nombre, minutos, segundos)
+        if numeracion is not None:
+           cronometro.numeracion = numeracion
         self.temporizadores.append(cronometro)
         self.pagina_dividida.agregar_temporizador_ui(cronometro, self)
-
 ########################################################################################################
 
     def accion_principal_temporizador(self):
@@ -252,3 +262,22 @@ class CronometroApp(QMainWindow):
         self.resetear_controles()
         self.cronometro_editando = None
         self.pagina_dividida.btn_agregar.setText("Agregar")
+
+########################################################################################################
+
+    def reordenar_temporizadores(self):
+        """Actualiza el orden interno de los cronómetros tras moverlos en la UI"""
+        nuevos_temporizadores = []
+
+        for i in range(self.pagina_dividida.lista_temporizadores.count()):
+          item = self.pagina_dividida.lista_temporizadores.item(i)
+          widget = self.pagina_dividida.lista_temporizadores.itemWidget(item)
+
+          for cronometro in self.temporizadores:
+            if cronometro.widget == widget:
+                cronometro.numeracion = i + 1  # Asigna numeración nueva según posición
+                nuevos_temporizadores.append(cronometro)
+                break
+
+        self.temporizadores = nuevos_temporizadores
+        Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
