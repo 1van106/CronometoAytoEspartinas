@@ -12,6 +12,8 @@ class Cronometro:
         self.minutos_originales = minutos  # Guardar valores originales
         self.segundos_originales = segundos
 
+########################################################################################################
+
     def iniciar(self, callback_actualizacion, callback_alarma):
         if not self.corriendo:
             self.corriendo = True
@@ -19,12 +21,16 @@ class Cronometro:
             self.timer.timeout.connect(lambda: self._actualizar(callback_actualizacion, callback_alarma))
             self.timer.start(1000)
 
+########################################################################################################
+
     def detener(self):
         if self.corriendo:
             self.corriendo = False
             if self.timer:
                 self.timer.stop()
                 self.timer = None
+
+########################################################################################################
 
     def resetear(self, minutos=None, segundos=None):
         self.detener()
@@ -36,6 +42,8 @@ class Cronometro:
             # Si no se especifican valores, usar los originales
             self.minutos = self.minutos_originales
             self.segundos = self.segundos_originales
+
+########################################################################################################
 
     def _actualizar(self, callback_actualizacion, callback_alarma):
         if self.segundos > 0:
