@@ -1,6 +1,6 @@
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
-from PyQt6.QtGui import  QFontDatabase, QFont
+from PyQt6.QtGui import  QFontDatabase, QFont, QKeySequence, QShortcut
 from views.visualizacion import VentanaVisualizacion
 
 class VentanaControles(QMainWindow):
@@ -51,14 +51,14 @@ class VentanaControles(QMainWindow):
                 background-color: #2B2D31;
                 color:#FF9F5E;
                 font: bold 40px '{self.fuente_led.family()}';
-                border: 1.5px solid black;                     
-                padding: 3px;
+                border: 1.5px solid #FF9F5E;                     
+                padding: 5px;
                 margin: 0;                     
             """)
 
-            nombre_label = QLabel(cronometro['nombre'])
+            nombre_label = QLabel(f"{i + 1}. {cronometro['nombre']}")
             nombre_label.setStyleSheet(f"""
-                font: bold 20px '{self.fuente_led.family()}';color: #FF9F5E; background-color:  #2B2D31; border: none;
+                font: bold 20px '{self.fuente_led.family()}';color: #FF9F5E; background-color:  #2B2D31; border: 2px solid #FF9F5E;
                 """)
             contenedor_layout.addWidget(nombre_label)
 
@@ -88,7 +88,30 @@ class VentanaControles(QMainWindow):
             self.lista_temporizadores.addItem(item)
             self.lista_temporizadores.setItemWidget(item, contenedor)
 
+            if i < 9:  # teclas del 1 al 9
+                tecla = str(i + 1)
+                shortcut = QShortcut(QKeySequence(tecla), self)
+                # Conectar atajo de teclas numéricas al cronómetro correspondiente
+                shortcut.activated.connect(lambda idx=i: self.toggle_cronometro(idx))
+
+                # **Atajos dinámicos para Ctrl+1, Ctrl+2, ..., Ctrl+9 (Reset)**
+                shortcut_reset = QShortcut(QKeySequence(f"Ctrl+{i+1}"), self)
+                # El _ es el evento que es pasado por defecto a los atajos
+                shortcut_reset.activated.connect(lambda c=cronometro, t=tiempo_label, index=i: self.reset_cronometro(c, t, index))
+
         self.setCentralWidget(central_widget)
+
+########################################################################################################
+    
+    def toggle_cronometro(self, index):
+        cronometro = self.cronometros[index]
+        tiempo_label = cronometro.get('tiempo_label', None)  # Assuming you have a tiempo_label in cronometro, if not, handle it properly.
+    
+        if 'corriendo' not in cronometro or not cronometro['corriendo']:
+          self.iniciar_cronometro(cronometro, tiempo_label, index)
+        else:
+          self.detener_cronometro(cronometro, index)
+
 
 ########################################################################################################
 
