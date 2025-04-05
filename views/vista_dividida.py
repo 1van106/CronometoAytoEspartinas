@@ -43,7 +43,7 @@ class VistaDividida(QWidget):
         self.left_frame = QFrame()
         self.left_frame.setStyleSheet(f"""
           background: #2B2D31;
-          border-right: 1px solid {self.COLOR_BORDE};
+          border-right: 1px solid #F5F5F5;
         """)
         left_layout = QVBoxLayout(self.left_frame)
         left_layout.setContentsMargins(20, 20, 20, 20)
@@ -135,7 +135,7 @@ class VistaDividida(QWidget):
         self.right_frame = QFrame()
         self.right_frame.setStyleSheet(f"""
           background:#2B2D31;
-          border-left: 1px solid {self.COLOR_BORDE};
+          border-left: 1px solid #F5F5F5;
         """)
 
         self.right_layout = QVBoxLayout(self.right_frame)
@@ -162,7 +162,7 @@ class VistaDividida(QWidget):
           }
           QListWidget::item:selected {
             background-color: rgba(255, 159, 94, 0.2);
-            border: 1px dashed #FF9F5E;
+            border: 1px dashed #F5F5F5;
           }
         """)
         self.right_layout.addWidget(self.lista_temporizadores)
@@ -192,7 +192,7 @@ class VistaDividida(QWidget):
                 font: bold 40px '{self.fuente_led.family()}';
                 color: white;
                 padding: 12px;
-                border: 2px solid {self.COLOR_PRIMARIO};
+                border: 2px solid #F5F5F5;
                 border-radius: 6px;
                 background: transparent;
             }}
@@ -208,11 +208,11 @@ class VistaDividida(QWidget):
         label.setFont(self.fuente_led)
         label.setStyleSheet(f"""
             QLabel {{
-                color: {self.COLOR_PRIMARIO};
+                color: #F5F5F5;
                 padding: 10px 10px;
                 background:trasparent;
                 border-radius: 10px;
-                border: 3px dashed {self.COLOR_PRIMARIO};
+                border: 3px dashed #F5F5F5;
             }}
         """)
 
@@ -237,8 +237,8 @@ class VistaDividida(QWidget):
         boton.setStyleSheet(f"""
             QPushButton {{
                 font: bold 40px '{self.fuente_led.family()}';
-                color: {self.COLOR_TEXTO};
-                background: {self.COLOR_PRIMARIO};
+                color: black;
+                background: #F5F5F5;
                 padding: 8px 12px;
                 border: none;
                 border-radius: 5px;
@@ -258,8 +258,8 @@ class VistaDividida(QWidget):
         boton.setStyleSheet(f"""
             QPushButton {{
                 font: bold 40px '{self.fuente_led.family()}';
-                color: {self.COLOR_TEXTO};
-                background: {self.COLOR_PRIMARIO};
+                color: black;
+                background: #F5F5F5;
                 padding: 12px 24px;
                 border: none;
                 border-radius: 6px;
@@ -292,7 +292,7 @@ class VistaDividida(QWidget):
         widget = QWidget()
         widget.setStyleSheet(f"""
             background: transparent;
-            border: 2px solid {self.COLOR_PRIMARIO};
+            border: 2px solid #F5F5F5;
             border-radius: 8px;
             padding: 12px;
         """)
@@ -307,7 +307,7 @@ class VistaDividida(QWidget):
         numero_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         numero_label.setStyleSheet(f"""
             font: bold 24px '{self.fuente_led.family()}';
-            color: {self.COLOR_SECUNDARIO};
+            color: #F5F5F5;
             padding: 0;
         """)
         layout.addWidget(numero_label)
@@ -318,7 +318,7 @@ class VistaDividida(QWidget):
             font: bold 40px '{self.fuente_led.family()}';
             color:{self.COLOR_TEXTO};
             padding-bottom: 5px;
-            border: 2px solid {self.COLOR_PRIMARIO};
+            border: 2px solid #F5F5F5;
         """)
         nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(nombre_label)
@@ -327,10 +327,10 @@ class VistaDividida(QWidget):
         tiempo_label = QLabel(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
         tiempo_label.setFont(self.fuente_led)
         tiempo_label.setStyleSheet(f"""
-            color: {self.COLOR_PRIMARIO};
+            color: #F5F5F5;
             padding: 0px;
             margin:0;
-            border: 2px dashed {self.COLOR_PRIMARIO};
+            border: 2px dashed #F5F5F5;
         """)
         tiempo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(tiempo_label)
@@ -354,7 +354,7 @@ class VistaDividida(QWidget):
             btn_editar.setText("Editar")
         btn_editar.setStyleSheet(f"""
             QPushButton {{
-                background: {self.COLOR_PRIMARIO};
+                background: #F5F5F5;
                 border: none;
                 border-radius: 4px;
                 padding: 6px;
@@ -381,7 +381,7 @@ class VistaDividida(QWidget):
             btn_eliminar.setText("X")
         btn_eliminar.setStyleSheet(f"""
             QPushButton {{
-                background:  {self.COLOR_PRIMARIO};
+                background:  #F5F5F5;
                 border: none;
                 border-radius: 4px;
                 padding: 6px;

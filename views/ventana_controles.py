@@ -1,6 +1,6 @@
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
-from PyQt6.QtGui import  QFontDatabase, QFont, QKeySequence, QShortcut
+from PyQt6.QtGui import  QFontDatabase, QFont, QKeySequence, QShortcut,QIcon
 from views.visualizacion import VentanaVisualizacion
 
 class VentanaControles(QMainWindow):
@@ -9,11 +9,13 @@ class VentanaControles(QMainWindow):
 
     def __init__(self, cronometros, tipo_pleno, sound_alarm):
         super().__init__()
+        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
         self.tipo_pleno = tipo_pleno
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        
+        self.setWindowTitle(f"Pleno {self.tipo_pleno}")
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
-        self.resize(270, 820)
+        self.resize(400, 920)
 
         font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
         font_families = QFontDatabase.applicationFontFamilies(font_id)
@@ -29,17 +31,12 @@ class VentanaControles(QMainWindow):
     def init_ui(self):
         
         central_widget = QWidget()
+
         layout = QVBoxLayout(central_widget)
-        central_widget.setStyleSheet("background-color: #2B2D31;border:3px solid #FF9F5E;")
-        label = QLabel(f"Pleno {self.tipo_pleno}", self)
-        label.setStyleSheet(f"""
-            font: bold 20px '{self.fuente_led.family()}'; 
-            color: #FF9F5E;
-            background-color:#2B2D31;
-            text-align: center;
-            padding: 10px;
-        """)
-        layout.addWidget(label)
+        central_widget.setStyleSheet("background-color:white ;border:None;padding:0;margin:0;")
+        self.setCentralWidget(central_widget)
+
+      
         self.lista_temporizadores = QListWidget()
         layout.addWidget(self.lista_temporizadores)
 
@@ -48,17 +45,17 @@ class VentanaControles(QMainWindow):
             contenedor_layout = QVBoxLayout(contenedor)
 
             contenedor.setStyleSheet(f"""
-                background-color: #2B2D31;
-                color:#FF9F5E;
+                background-color: white;
+                color:#2B2D31;
                 font: bold 40px '{self.fuente_led.family()}';
-                border: 1.5px solid #FF9F5E;                     
+                border: 1.5px solid #2B2D31;                     
                 padding: 5px;
                 margin: 0;                     
             """)
 
             nombre_label = QLabel(f"{i + 1}. {cronometro['nombre']}")
             nombre_label.setStyleSheet(f"""
-                font: bold 20px '{self.fuente_led.family()}';color: #FF9F5E; background-color:  #2B2D31; border: 2px solid #FF9F5E;
+                font: bold 30px 'Arial';color: #2B2D31; background-color:  white; border: 2px solid #2B2D31;
                 """)
             contenedor_layout.addWidget(nombre_label)
 
@@ -102,6 +99,11 @@ class VentanaControles(QMainWindow):
         self.setCentralWidget(central_widget)
 
 ########################################################################################################
+
+    def cerrar_pleno(self):
+        self.close()  
+
+########################################################################################################
     
     def toggle_cronometro(self, index):
         cronometro = self.cronometros[index]
@@ -134,8 +136,8 @@ class VentanaControles(QMainWindow):
         """Aplica estilos a los botones de Play, Stop y Reset."""
         boton.setStyleSheet(f"""
             QPushButton {{
-                background-color: #FF9F5E;
-                color:  #2B2D31;
+                background-color: #2B2D31;
+                color:  white;
                 font: bold 20px '{self.fuente_led.family()}';
                 padding: 5px;
                 border-radius: 5px;
