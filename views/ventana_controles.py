@@ -9,13 +9,19 @@ class VentanaControles(QMainWindow):
 
     def __init__(self, cronometros, tipo_pleno, sound_alarm):
         super().__init__()
+        
         self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
         self.tipo_pleno = tipo_pleno
+        button_cerrar = QPushButton("Cerrar")
+        button_cerrar.clicked.connect(self.cerrar_todo)
+
+        layout = QVBoxLayout()
+        layout.addWidget(button_cerrar)
         
         self.setWindowTitle(f"Pleno {self.tipo_pleno}")
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
-        self.resize(400, 920)
+        self.resize(440, 920)
 
         font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
         font_families = QFontDatabase.applicationFontFamilies(font_id)
@@ -100,8 +106,10 @@ class VentanaControles(QMainWindow):
 
 ########################################################################################################
 
-    def cerrar_pleno(self):
-        self.close()  
+    def cerrar_todo(self):
+        """Cerrar tanto la ventana de controles como la ventana de visualización"""
+        self.ventana_visualizacion.close()  # Cerrar la ventana de visualización
+        self.close()
 
 ########################################################################################################
     
@@ -153,6 +161,64 @@ class VentanaControles(QMainWindow):
 
 ########################################################################################################
 
+    
+    def actualizar_color_display(self, cronometro, estado):
+        """Actualiza el color del display de tiempo según el estado."""
+        tiempo_label = cronometro['tiempo_label']
+        numeracion_label = cronometro['numeracion_label']  # Título/número
+        contenedor = cronometro['contenedor']
+
+        if estado == 'inactivo':
+            # Cuando el cronómetro está inactivo, se ve apagado (gris)
+            tiempo_label.setStyleSheet("""
+            
+              padding: 10px;
+              background-color: #E0E0E0; 
+            """)
+            numeracion_label.setStyleSheet("""
+              font: bold 30px Arial;
+              background-color: #E0E0E0;
+            """)
+            contenedor.setStyleSheet("""
+              background-color: #E0E0E0;
+          
+            """)
+
+        elif estado == 'activo':
+            # Cuando el cronómetro está activo, se ve blanco
+            tiempo_label.setStyleSheet("""
+            color: #2B2D31;  /* Gris oscuro */
+            padding: 10px;
+            background-color: #F5F5F5;
+            
+            """)
+            numeracion_label.setStyleSheet("""
+            color: #2B2D31;  
+            background-color: #F5F5F5;
+            font: bold 30px Arial;
+            """)
+            contenedor.setStyleSheet("""
+              background-color: #F5F5F5;
+            """)
+        elif estado == 'pasado':
+            # Cuando el cronómetro se pasa, se pone rojo/naranja cálido
+            tiempo_label.setStyleSheet("""
+              padding: 10px;
+              background-color:#FF6B6B;
+              
+            """)
+            numeracion_label.setStyleSheet("""
+              font: bold 30px Arial;
+              background-color: #FF6B6B;
+            """)
+            contenedor.setStyleSheet("""
+              background-color: #FF6B6B;
+            """)
+
+
+
+########################################################################################################
+
     def iniciar_cronometro(self, cronometro, tiempo_label, index):
         if 'corriendo' not in cronometro:
             cronometro['corriendo'] = False
@@ -165,19 +231,20 @@ class VentanaControles(QMainWindow):
 
             self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
 
-            # Cambiar el color a blanco
-            cronometro["contenedor"].setStyleSheet("background-color: #FFFFFF; border: 2px solid black;")
+             # Cambiar el color a blanco (activo)
+            self.actualizar_color_display(cronometro, 'activo')
 
 ########################################################################################################
 
     def detener_cronometro(self, cronometro, index):
-        if cronometro["corriendo"]:
+        if cronometro.get("corriendo", False):
           cronometro["corriendo"] = False
           cronometro["timer"].stop()
 
           self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
 
-          cronometro["contenedor"].setStyleSheet("background-color:  #f0f0f0; border: 2px solid black;")
+          # Cambiar el color a apagado (inactivo)
+          self.actualizar_color_display(cronometro, 'inactivo')
 
 ########################################################################################################
 
@@ -186,7 +253,7 @@ class VentanaControles(QMainWindow):
         cronometro["minutos"] = cronometro.get("minutos_originales", 0)
         cronometro["segundos"] = cronometro.get("segundos_originales", 0)
  
-        if cronometro["corriendo"]:
+        if cronometro.get("corriendo", False):
           cronometro["corriendo"] = False
           cronometro["timer"].stop()
 
@@ -211,7 +278,8 @@ class VentanaControles(QMainWindow):
             if "alarma_sonada" not in cronometro:
               cronometro["alarma_sonada"] = True
               self.sonar_alarma()
-              cronometro["contenedor"].setStyleSheet("background-color: rgba(255, 0, 0, 0.6); border: 2px solid black;")
+              # Cambiar el color a rojo cuando el tiempo ha pasado
+              self.actualizar_color_display(cronometro, 'pasado')
 
             # Continúa en tiempo negativo
             cronometro["segundos"] -= 1

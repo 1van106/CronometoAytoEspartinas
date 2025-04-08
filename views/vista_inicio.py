@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter
+from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter,QIcon
 from PyQt6.QtCore import Qt
 import os
 
@@ -7,7 +7,7 @@ import os
 class VistaInicio(QWidget):
     def __init__(self, fuente_oficial):
         super().__init__()
-
+        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
         # Configuración básica
         self.setStyleSheet("background: transparent;")
 

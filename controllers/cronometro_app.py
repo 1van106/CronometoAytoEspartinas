@@ -3,7 +3,7 @@ import pygame
 from PyQt6.QtWidgets import (QMainWindow, QMenuBar, QMenu, QStackedWidget,
                              QMessageBox, QApplication)
 from PyQt6.QtGui import QFont, QGuiApplication
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 
 from models.almacenamiento import Almacenamiento
 from models.cronometro import Cronometro
@@ -37,6 +37,8 @@ class CronometroApp(QMainWindow):
         self.segundos = 0
         self.temporizadores = []
         self.cronometro_editando = None
+        self.logo=None
+        self.logo_path=None
         self.tipo_pleno_actual = None
         self.fuente_oficial = QFont("Times New Roman", 48, QFont.Weight.Bold)
 
@@ -141,18 +143,18 @@ class CronometroApp(QMainWindow):
                 item["nombre"], 
                 item["minutos"], 
                 item["segundos"], 
-                item.get("numeracion")
+                item.get("numeracion"),
+                logo=item.get("logo")
             )
 
 ########################################################################################################
 
-    def agregar_temporizador_desde_datos(self, nombre, minutos, segundos, numeracion=None):
+    def agregar_temporizador_desde_datos(self, nombre, minutos, segundos, numeracion=None, logo=None):
         """Agrega un temporizador desde datos existentes"""
-        cronometro = Cronometro(nombre, minutos, segundos)
-        if numeracion is not None:
-           cronometro.numeracion = numeracion
+        cronometro = Cronometro(nombre, minutos, segundos, numeracion=numeracion, logo=logo)
         self.temporizadores.append(cronometro)
         self.pagina_dividida.agregar_temporizador_ui(cronometro, self)
+
 ########################################################################################################
 
     def accion_principal_temporizador(self):
@@ -170,11 +172,17 @@ class CronometroApp(QMainWindow):
         if not nombre or (self.minutos == 0 and self.segundos == 0):
             QMessageBox.warning(self, "Error", "El cronómetro debe tener un título y un tiempo mayor a 00:00.")
             return
+    
+        logo_path = self.pagina_dividida.combo_logos.currentData()  # Obtener el logo seleccionado
 
-        cronometro = Cronometro(nombre, self.minutos, self.segundos)
+        # Crear el cronómetro con el logo
+        cronometro = Cronometro(nombre, self.minutos, self.segundos, logo=logo_path)
+
+        # Agregar el cronómetro a la lista y actualizar la UI
         self.temporizadores.append(cronometro)
         self.pagina_dividida.agregar_temporizador_ui(cronometro, self)
-
+    
+        # Guardar los cronómetros
         Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
         self.resetear_controles()
 
@@ -189,11 +197,14 @@ class CronometroApp(QMainWindow):
         if not nombre or (self.minutos == 0 and self.segundos == 0):
             QMessageBox.warning(self, "Error", "El cronómetro debe tener un título y un tiempo mayor a 00:00.")
             return
+        
+        logo_path = self.pagina_dividida.combo_logos.currentData()
 
         # Actualizar el cronómetro
         self.cronometro_editando.nombre = nombre
         self.cronometro_editando.minutos = self.minutos
         self.cronometro_editando.segundos = self.segundos
+        self.cronometro_editando.logo = logo_path
 
         # Actualizar UI
         self.pagina_dividida.actualizar_temporizador_ui(self.cronometro_editando)
@@ -213,6 +224,17 @@ class CronometroApp(QMainWindow):
         self.pagina_dividida.min_display.setText(f"{self.minutos:02d}")  
         self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}") 
         self.pagina_dividida.btn_agregar.setText("Actualizar")
+
+        if cronometro.logo:
+        # Si hay logo, actualizar el logo
+            if hasattr(self.pagina_dividida, 'logo_label'):
+                self.pagina_dividida.logo_label.setPixmap(QPixmap(cronometro.logo))
+                self.pagina_dividida.logo_label.show()
+        else:
+        # Si no hay logo, limpiar o establecer un logo por defecto
+            if hasattr(self.pagina_dividida, 'logo_label'):
+                self.pagina_dividida.logo_label.clear() 
+
         self.stacked_main.setCurrentIndex(1)
 
 ########################################################################################################
