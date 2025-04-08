@@ -7,6 +7,8 @@ from PyQt6.QtWidgets import (QMainWindow, QMenuBar, QMenu, QStackedWidget,
 from PyQt6.QtGui import QFont, QGuiApplication, QAction
 from PyQt6.QtGui import QIcon, QPixmap
 
+
+
 from models.almacenamiento import Almacenamiento
 from models.cronometro import Cronometro
 from views.vista_inicio import VistaInicio
@@ -97,6 +99,9 @@ class CronometroApp(QMainWindow):
     def crear_menu(self):
         barra_menu = self.menuBar()
 
+        # Configuración clave para mostrar texto
+        barra_menu.setNativeMenuBar(False)  # Desactiva menús nativos
+
         # Menú Admin
         admin_menu = barra_menu.addMenu("Admin")
         admin_menu.addAction("Pleno Ordinario").triggered.connect(lambda: self.mostrar_editor("ordinario"))
@@ -144,6 +149,42 @@ class CronometroApp(QMainWindow):
         info_action = QAction("Información", self)
         ayuda_menu.addAction(info_action)
 
+
+        # Opción Ayuda
+        ayuda_menu = barra_menu.addMenu("Ayuda")
+        guia_widget = QWidget()
+        guia_layout = QHBoxLayout(guia_widget)
+        guia_layout.setContentsMargins(10, 0, 10, 0)  # Márgenes laterales iguales
+        guia_layout.setSpacing(5)  # Espacio reducido entre texto e icono
+
+        # Texto con alineación perfecta
+        guia_text = QLabel("Guía")
+        guia_text.setStyleSheet("""
+               QLabel {
+                   color: black;
+                   padding: 0;
+                   margin: 0;
+                   font: 9pt "Segoe UI";
+               }
+           """)
+
+        # Icono con tamaño preciso
+        guia_icon = QLabel()
+        guia_icon.setPixmap(QIcon("assets/help_icon.png").pixmap(14, 14))
+        guia_icon.setStyleSheet("padding: 0; margin: 0;")
+
+        guia_layout.addWidget(guia_text, alignment=Qt.AlignmentFlag.AlignVCenter)
+        guia_layout.addStretch()  # Empuja el icono a la derecha
+        guia_layout.addWidget(guia_icon, alignment=Qt.AlignmentFlag.AlignVCenter)
+
+        guia_action = QWidgetAction(ayuda_menu)
+        guia_action.setDefaultWidget(guia_widget)
+        guia_action.triggered.connect(self.mostrar_guia)
+        ayuda_menu.addAction(guia_action)
+
+        # Opción Información
+        info_action = QAction("Información", self)
+        ayuda_menu.addAction(info_action)
 
         # Opción Salir
         # barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)

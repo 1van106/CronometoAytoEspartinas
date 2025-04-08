@@ -2,6 +2,7 @@ from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
 from PyQt6.QtGui import  QFontDatabase, QFont, QKeySequence, QShortcut,QIcon
 from views.visualizacion import VentanaVisualizacion
+from PyQt6.QtGui import  QFontDatabase, QFont
 
 class VentanaControles(QMainWindow):
     # Señal para sincronizar los cronómetros entre ventanas
