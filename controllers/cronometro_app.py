@@ -1,8 +1,10 @@
 import os
 import pygame
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QMainWindow, QMenuBar, QMenu, QStackedWidget,
-                             QMessageBox, QApplication)
-from PyQt6.QtGui import QFont, QGuiApplication
+                             QMessageBox, QApplication, QWidgetAction, QLabel,
+    QWidget, QHBoxLayout)
+from PyQt6.QtGui import QFont, QGuiApplication, QAction
 from PyQt6.QtGui import QIcon, QPixmap
 
 from models.almacenamiento import Almacenamiento
@@ -11,6 +13,7 @@ from views.vista_inicio import VistaInicio
 from views.vista_dividida import VistaDividida
 from views.visualizacion import VentanaVisualizacion
 from views.ventana_controles import VentanaControles
+from views.guia import VentanaGuia
 
 
 class CronometroApp(QMainWindow):
@@ -104,9 +107,102 @@ class CronometroApp(QMainWindow):
         visualizacion_menu.addAction("Ver Pleno Ordinario").triggered.connect(lambda: self.mostrar_pleno("ordinario"))
         visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(
             lambda: self.mostrar_pleno("extraordinario"))
+        
+        # Opción Ayuda
+        ayuda_menu = barra_menu.addMenu("Ayuda")
+        guia_widget = QWidget()
+        guia_layout = QHBoxLayout(guia_widget)
+        guia_layout.setContentsMargins(10, 0, 10, 0)  # Márgenes laterales iguales
+        guia_layout.setSpacing(5)  # Espacio reducido entre texto e icono
+
+        # Texto con alineación perfecta
+        guia_text = QLabel("Guía")
+        guia_text.setStyleSheet("""
+               QLabel {
+                   color: black;
+                   padding: 0;
+                   margin: 0;
+                   font: 9pt "Segoe UI";
+               }
+           """)
+
+        # Icono con tamaño preciso
+        guia_icon = QLabel()
+        guia_icon.setPixmap(QIcon("assets/help_icon.png").pixmap(14, 14))
+        guia_icon.setStyleSheet("padding: 0; margin: 0;")
+
+        guia_layout.addWidget(guia_text, alignment=Qt.AlignmentFlag.AlignVCenter)
+        guia_layout.addStretch()  # Empuja el icono a la derecha
+        guia_layout.addWidget(guia_icon, alignment=Qt.AlignmentFlag.AlignVCenter)
+
+        guia_action = QWidgetAction(ayuda_menu)
+        guia_action.setDefaultWidget(guia_widget)
+        guia_action.triggered.connect(self.mostrar_guia)
+        ayuda_menu.addAction(guia_action)
+
+        # Opción Información
+        info_action = QAction("Información", self)
+        ayuda_menu.addAction(info_action)
+
 
         # Opción Salir
-        barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
+        # barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
+
+        salir_action = QAction(self)
+        salir_action.setIcon(QIcon("assets/exit_icon.png"))
+        salir_action.triggered.connect(QApplication.instance().quit)
+        barra_menu.addAction(salir_action)
+
+        # Estilo del Menu Bar
+        barra_menu.setStyleSheet("""
+                /* Barra de menú principal */
+                QMenuBar {
+                    background-color: white;
+                    color: black;
+                }
+                QMenuBar::item {
+                    background: transparent;
+                    color: black;
+                    padding: 5px 15px;
+                }
+                QMenuBar::item:selected {
+                    background-color: #e0e0e0;  /* Gris claro al seleccionar */
+                    color: black;
+                }
+                
+                /* Menús desplegables */
+                QMenu {
+                    background-color: white;
+                    color: black;
+                    border: 1px solid #d0d0d0;
+                }
+                QMenu::item {
+                    background-color: transparent;
+                    color: black;
+                    padding: 5px 20px 5px 10px;
+                    height: 22px;
+                }
+                QMenu::item:selected {
+                    background-color: #e0e0e0;  /* Gris claro al seleccionar */
+                    color: black;
+                }
+                QMenu::icon {
+                    left: 5px;  /* Posición de iconos en submenú */
+                }
+                
+                /* Elementos personalizados */
+                QWidgetAction {
+                    background: transparent;
+                    min-width: 120px;
+                }
+            """)
+
+########################################################################################################
+
+    def mostrar_guia(self):
+        """Muestra la ventana de guía de usuario"""
+        self.ventana_guia = VentanaGuia()
+        self.ventana_guia.show()
 
 ########################################################################################################
 
