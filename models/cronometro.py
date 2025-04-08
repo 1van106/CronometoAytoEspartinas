@@ -10,7 +10,6 @@ class Cronometro:
         self.corriendo = False
         self.timer = None
         self.widget = None
-        self.logo = logo 
         self.logo_path = logo 
         self.minutos_originales = minutos  # Guardar valores originales
         self.segundos_originales = segundos

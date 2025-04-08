@@ -26,6 +26,7 @@ class CronometroApp(QMainWindow):
 
     def configurar_ventana(self):
         self.setWindowTitle("Ayuntamiento de Espartinas")
+        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
         screen = QGuiApplication.primaryScreen().geometry()
         self.setGeometry(screen)
         self.resize(1200, 800)
@@ -197,22 +198,24 @@ class CronometroApp(QMainWindow):
         if not nombre or (self.minutos == 0 and self.segundos == 0):
             QMessageBox.warning(self, "Error", "El cronómetro debe tener un título y un tiempo mayor a 00:00.")
             return
-        
+    
         logo_path = self.pagina_dividida.combo_logos.currentData()
 
-        # Actualizar el cronómetro
+        # Actualizar el cronómetro editado con los nuevos valores
         self.cronometro_editando.nombre = nombre
         self.cronometro_editando.minutos = self.minutos
         self.cronometro_editando.segundos = self.segundos
-        self.cronometro_editando.logo = logo_path
+        self.cronometro_editando.logo_path = logo_path  # Asegúrate de usar 'logo_path'
 
-        # Actualizar UI
+        # Actualizar UI para reflejar los cambios
         self.pagina_dividida.actualizar_temporizador_ui(self.cronometro_editando)
 
-        # Guardar y limpiar
+        # Guardar todos los cronómetros en el archivo
         Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
+    
+        # Resetear el modo de edición
         self.resetear_edicion()
-
+   
 ########################################################################################################
 
     def editar_temporizador(self, cronometro):
@@ -225,7 +228,7 @@ class CronometroApp(QMainWindow):
         self.pagina_dividida.seg_display.setText(f"{self.segundos:02d}") 
         self.pagina_dividida.btn_agregar.setText("Actualizar")
 
-        if cronometro.logo:
+        if cronometro.logo_path:
         # Si hay logo, actualizar el logo
             if hasattr(self.pagina_dividida, 'logo_label'):
                 self.pagina_dividida.logo_label.setPixmap(QPixmap(cronometro.logo))

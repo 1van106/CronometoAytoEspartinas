@@ -365,12 +365,11 @@ class VistaDividida(QWidget):
 ########################################################################################################
 
     def crear_widget_temporizador(self, cronometro, controlador):
-        """Crea un widget de temporizador con diseño moderno"""
         widget = QWidget()
-        widget.setStyleSheet(f"""
-            background: #F5F5F5;
-            border: 2px solid #2B2D31;
-            padding: 6px;
+        widget.setStyleSheet("""
+          background: #F5F5F5;
+          border: 2px solid #2B2D31;
+          padding: 6px;
         """)
 
         layout = QVBoxLayout(widget)
@@ -378,78 +377,73 @@ class VistaDividida(QWidget):
         layout.setSpacing(2)
 
         info_layout = QHBoxLayout()
-        info_layout.setContentsMargins(0, 0, 0, 0)  # No márgenes en el layout
-        info_layout.setSpacing(4) 
+        widget.info_layout = info_layout  # <- Para poder usarlo en el update
 
-        # Número del temporizador
+        info_layout.setContentsMargins(0, 0, 0, 0)
+        info_layout.setSpacing(4)
+
         numero_label = QLabel(f"#{self.lista_temporizadores.count() + 1}")
         numero_label.setObjectName("numero_label")
         numero_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         numero_label.setStyleSheet(f"""
-            font: bold 24px '{self.fuente_led.family()}';
-            color: #2B2D31;
-            padding: 10px;
-            border:None;
+          font: bold 24px '{self.fuente_led.family()}';
+          color: #2B2D31;
+          padding: 10px;
+          border:None;
         """)
-        numero_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)  # Fijar tamaño
+        numero_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         info_layout.addWidget(numero_label)
 
-        # Logo del temporizador (si existe)
+        # Logo (si existe)
         logo_label = None
-        if cronometro.logo:
+        if cronometro.logo_path:
             logo_label = QLabel()
-            logo_pixmap = QPixmap(cronometro.logo)
+            logo_pixmap = QPixmap(cronometro.logo_path)
             logo_label.setPixmap(logo_pixmap.scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
-            logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Alineación vertical centrada
-            logo_label.setStyleSheet(f"""
+            logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            logo_label.setStyleSheet("""
               border: None;
               padding: 2px;
               margin: 0;
             """)
-          
             info_layout.addWidget(logo_label)
-    
+        
+        cronometro.widget = widget
+        widget.label_logo = logo_label  
 
-        numero_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        info_layout.addWidget(logo_label)
+        
 
-
-        # Título del temporizador
+        # Nombre
         nombre_label = QLabel(cronometro.nombre)
         nombre_label.setFont(self.fuente_led)
-        nombre_label.setStyleSheet(f"""
-            color:#2B2D31;
-            border: None;
-            margin:0;
-        """)
+        nombre_label.setStyleSheet("color:#2B2D31; border: None; margin:0;")
         nombre_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         nombre_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         info_layout.addWidget(nombre_label)
 
         layout.addLayout(info_layout)
 
-        # Tiempo del temporizador
+        # Tiempo
         tiempo_label = QLabel(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
         tiempo_label.setStyleSheet(f"""
-            color: #2B2D31;
-            font:bold 40px '{self.fuente_led.family()}';
-            padding: 10px;
-            margin:10px;
-            border: 2px dashed #2B2D31;
+          color: #2B2D31;
+          font:bold 40px '{self.fuente_led.family()}';
+          padding: 10px;
+          margin:10px;
+          border: 2px dashed #2B2D31;
         """)
         tiempo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(tiempo_label)
 
-        # Guardar referencias
+        # Guardamos referencias
         widget.label_nombre = nombre_label
         widget.label_tiempo = tiempo_label
 
-        # Botones de acción
+        # Botones
         botones_layout = QHBoxLayout()
         botones_layout.setContentsMargins(0, 0, 10, 0)
         botones_layout.setSpacing(10)
 
-        # Botón Editar
         btn_editar = QPushButton()
         btn_editar.setCursor(Qt.CursorShape.ArrowCursor)
         if os.path.exists("assets/lapiz.png"):
@@ -457,60 +451,53 @@ class VistaDividida(QWidget):
             btn_editar.setToolTip("Editar")
         else:
             btn_editar.setText("Editar")
-        btn_editar.setStyleSheet(f"""
-            QPushButton {{
-                background: #F5F5F5;
-                border: 2px solid #2B2D31;
-                border-radius: 4px;
-                padding:10px;
-                min-width: 16px;
-                max-width: 16px;
-                min-height: 16px;
-                max-height: 16px;
-            }}
-            QPushButton:hover {{
-                background: {self.COLOR_SECUNDARIO};
-            }}
+
+        btn_editar.setStyleSheet("""
+          QPushButton {
+            background: #F5F5F5;
+            border: 2px solid #2B2D31;
+            border-radius: 4px;
+            padding:10px;
+            min-width: 16px; max-width: 16px;
+            min-height: 16px; max-height: 16px;
+          }
+          QPushButton:hover {
+            background: #D3D3D3;
+          }
         """)
         btn_editar.clicked.connect(lambda: controlador.editar_temporizador(cronometro))
-        
 
-        # Botón Eliminar
         btn_eliminar = QPushButton()
         btn_eliminar.setCursor(Qt.CursorShape.ArrowCursor)
-
         if os.path.exists("assets/papelera.png"):
             btn_eliminar.setIcon(QIcon("assets/papelera.png"))
             btn_eliminar.setToolTip("Eliminar")
         else:
             btn_eliminar.setText("X")
-        btn_eliminar.setStyleSheet(f"""
-            QPushButton {{
-                background:  #F5F5F5;
-                border: 2px solid #2B2D31;
-                border-radius: 4px;
-                padding: 10px;
-                margin:10px;
-                min-width: 16px;
-                max-width: 16px;
-                min-height: 16px;
-                max-height: 16px;
-                
-            }}
-            QPushButton:hover {{
-                background: #FF6B5B;
-            }}
+
+        btn_eliminar.setStyleSheet("""
+          QPushButton {
+            background: #F5F5F5;
+            border: 2px solid #2B2D31;
+            border-radius: 4px;
+            padding: 10px;
+            margin:10px;
+            min-width: 16px; max-width: 16px;
+            min-height: 16px; max-height: 16px;
+          }
+          QPushButton:hover {
+            background: #FF6B5B;
+          }
         """)
         btn_eliminar.clicked.connect(lambda: controlador.eliminar_temporizador(cronometro))
 
         botones_layout.addStretch()
         botones_layout.addWidget(btn_editar)
         botones_layout.addWidget(btn_eliminar)
-        
-
         layout.addLayout(botones_layout)
 
         return widget
+
 
 
 ########################################################################################################
@@ -518,6 +505,42 @@ class VistaDividida(QWidget):
 
     def actualizar_temporizador_ui(self, cronometro):
         """Actualiza la UI de un temporizador existente"""
-        if cronometro.widget:
-          cronometro.widget.label_nombre.setText(cronometro.nombre)
-          cronometro.widget.label_tiempo.setText(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
+        if not cronometro.widget:
+            return
+        
+        cronometro.widget.label_nombre.setText(cronometro.nombre)
+        cronometro.widget.label_tiempo.setText(f"{cronometro.minutos:02d}:{cronometro.segundos:02d}")
+
+        logo_path = cronometro.logo_path
+        logo_label = getattr(cronometro.widget, 'label_logo', None)
+
+        # Actualizar logo
+        logo_path = cronometro.logo_path
+        logo_label = getattr(cronometro.widget, 'label_logo', None)
+
+        if logo_path:
+            if logo_label:
+                # Ya existe: actualizamos pixmap
+                logo_label.setPixmap(QPixmap(logo_path).scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+                logo_label.show()
+            else:
+                # No existía: creamos, insertamos y guardamos la referencia
+                logo_label = QLabel()
+                logo_label.setPixmap(QPixmap(logo_path).scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+                logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                logo_label.setStyleSheet("""
+                  border: None;
+                  padding: 2px;
+                  margin: 0;
+                """)
+                cronometro.widget.info_layout.insertWidget(1, logo_label)  # Insertamos después del número
+                cronometro.widget.label_logo = logo_label
+        else:
+            # No hay logo: ocultamos si había
+            if logo_label:
+                logo_label.hide()
+
+
+
+
+
