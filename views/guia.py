@@ -8,31 +8,36 @@ class VentanaGuia(QWidget):
     def __init__(self):
         super().__init__()
 
+        # Título y tamaño de la ventana
         self.setWindowTitle("Guía de Usuario - Cronómetro Municipal")
         self.resize(1000, 750)
+
+        # Estilo general del fondo
         self.setStyleSheet("background-color: #f8f9fa;")
 
-        # Layout principal
+        # Layout principal de la ventana
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(0, 0, 0, 0)
         layout_principal.setSpacing(0)
 
-        # Área de scroll principal (única)
+        # Área de scroll principal
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(QFrame.Shape.NoFrame)
         scroll_area.setStyleSheet("border: none; background-color: #f8f9fa;")
 
-        # Widget contenedor
+        # Widget contenedor del contenido desplazable
         contenido_widget = QWidget()
         contenido_widget.setStyleSheet("background-color: white;")
+
+        # Layout para el contenido dentro del scroll
         self.layout_contenido = QVBoxLayout(contenido_widget)
         self.layout_contenido.setContentsMargins(40, 40, 40, 40)
         self.layout_contenido.setSpacing(30)
 
-        # Contenido HTML unificado
+        # QTextBrowser que mostrará la guía en formato HTML
         self.texto_guia = QTextBrowser()
-        self.texto_guia.setOpenExternalLinks(True)
+        self.texto_guia.setOpenExternalLinks(True)  # Permitir enlaces externos
         self.texto_guia.setStyleSheet("""
             QTextBrowser {
                 background-color: white;
@@ -43,14 +48,17 @@ class VentanaGuia(QWidget):
             }
         """)
 
-        # Configurar el documento HTML
+        # Llama a la función que arma el HTML de la guía
         self.configurar_guia_completa()
 
+        # Añadir QTextBrowser al layout
         self.layout_contenido.addWidget(self.texto_guia)
         scroll_area.setWidget(contenido_widget)
+
+        # Agregar scroll_area al layout principal
         layout_principal.addWidget(scroll_area)
 
-        # Botón de cerrar
+        # Botón para cerrar la guía
         btn_cerrar = QPushButton("Cerrar Guía")
         btn_cerrar.setStyleSheet("""
             QPushButton {
@@ -67,19 +75,23 @@ class VentanaGuia(QWidget):
                 background-color: #2980b9;
             }
         """)
-        btn_cerrar.clicked.connect(self.close)
+        btn_cerrar.clicked.connect(self.close)  # Acción del botón
         layout_principal.addWidget(btn_cerrar, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def configurar_guia_completa(self):
-        """Configura todo el contenido de la guía en un solo documento HTML"""
-        html_content = """
+        """
+        Crea el contenido HTML de la guía de usuario.
+        Puedes personalizar este contenido para incluir imágenes, estilos, títulos y secciones.
+        Las imágenes deben estar en una ruta accesible desde donde se ejecuta la app.
+        """
+        html_content = """ 
         <!DOCTYPE html>
         <html>
         <head>
         <style>
             body {
                 font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 15px;
+                font-size: 16px;
                 line-height: 1.6;
                 color: #333;
                 margin: 0;
@@ -90,21 +102,30 @@ class VentanaGuia(QWidget):
             }
             h1 {
                 color: #2c3e50;
-                font-size: 24px;
-                border-bottom: 2px solid #3498db;
-                padding-bottom: 10px;
+                font-size: 32px;
+                text-align: center;
                 margin-top: 0;
+                margin-bottom: 20px;
+                background-color: #eaf2f8;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
             }
             h2 {
                 color: #3498db;
-                font-size: 20px;
-                margin-top: 30px;
+                font-size: 24px;
+                margin-top: 15px;
                 margin-bottom: 15px;
+                border-left: 5px solid #3498db;
+                padding-left: 10px;
             }
             h3 {
                 color: #2c3e50;
-                font-size: 18px;
-                margin-top: 25px;
+                font-size: 20px;
+                margin-top: 15px;
+            }
+            p {
+                margin-top: 15px;
             }
             ul, ol {
                 margin-top: 10px;
@@ -125,25 +146,54 @@ class VentanaGuia(QWidget):
                 border-left: 4px solid #3498db;
                 padding: 10px 15px;
                 margin: 15px 0;
+                font-style: italic;
+            }
+            .imagen {
+                display: block;
+                text-align: center;
+                margin: 0;
+                padding: 0;
+            }
+            img {
+                max-width: 700px;
+                width: 100%;
+                height: auto;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+                display: block;
+                margin-bottom: 0px !important;
+                padding-bottom: 0px !important;
+            }
+            .img-ajustada {
+                display: inline-block;
+                max-width: 600px;
+                width: 100%;
+                height: auto;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+                margin: 0 !important;
+                padding: 0 !important;
             }
         </style>
         </head>
         <body>
-        """
 
-        # Sección de Introducción
-        html_content += """
+        <!-- Título principal -->
         <div class='seccion'>
             <h1>Guía de Usuario del Cronómetro Municipal</h1>
-            <p>Esta aplicación está diseñada para gestionar los tiempos de intervención en los plenos del Ayuntamiento de Espartinas.</p>
+            <p style="text-align: center;">
+                Esta aplicación está diseñada para gestionar los tiempos de intervención en los plenos del Ayuntamiento de Espartinas.
+            </p>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/vista_general.png" alt="Vista general de la aplicación">
+            </div>
         </div>
-        """
 
-        # Sección del Menú Principal
-        html_content += """
+        <!-- Menú principal -->
         <div class='seccion'>
             <h2>1. Menú Principal</h2>
-
             <h3>Estructura del Menú:</h3>
             <ul>
                 <li><b>Menú Admin:</b>
@@ -164,16 +214,16 @@ class VentanaGuia(QWidget):
                         <li><i>Información:</i> Muestra detalles sobre la aplicación</li>
                     </ul>
                 </li>
-                <li><b>Salir:</b> Cierra la aplicación (icono en la esquina superior derecha)</li>
+                <li><b>Salir:</b> Cierra la aplicación</li>
             </ul>
+            <div class="imagen">
+                <img src="assets/menu.png" alt="Captura del menú principal">
+            </div>
         </div>
-        """
 
-        # Sección de Funcionamiento Básico
-        html_content += """
+        <!-- Configuración de cronómetro -->
         <div class='seccion'>
             <h2>2. Funcionamiento del Cronómetro</h2>
-
             <h3>Configuración de Temporizadores:</h3>
             <ol>
                 <li>Seleccione <b>Admin > Pleno Ordinario/Extraordinario</b></li>
@@ -184,52 +234,42 @@ class VentanaGuia(QWidget):
                         <li>Haga clic en <b>Agregar</b> para añadir el temporizador</li>
                     </ul>
                 </li>
-                <li>Los temporizadores añadidos aparecerán en la lista lateral</li>
-                <li>Puede editar o eliminar temporizadores con los iconos correspondientes</li>
             </ol>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/configuracion_temporizador.png" alt="Configuración del temporizador">
+            </div>
 
             <div class='nota'>
                 <b>Nota:</b> Los cambios se guardan automáticamente cuando se añaden o modifican temporizadores.
             </div>
 
             <h3>Uso Durante el Pleno:</h3>
-            <p>Una vez configurados los temporizadores, acceda a <b>Visualización > Ver Pleno...</b> para mostrar:</p>
+            <p>Acceda a <b>Visualización > Ver Pleno...</b> para mostrar los temporizadores activos.</p>
             <ul>
-                <li>Temporizadores activos con cuenta regresiva</li>
+                <li>Cuenta regresiva visible</li>
                 <li>Indicador visual cuando el tiempo se agota</li>
-                <li>Sonido de aviso (si está configurado)</li>
+                <li>Sonido de aviso</li>
             </ul>
         </div>
-        """
 
-        # Sección de Visualización
-        html_content += """
+        <!-- Modo de visualización -->
         <div class='seccion'>
             <h2>3. Modo Visualización</h2>
-
-            <h3>Pantalla de Visualización:</h3>
-            <p>Esta pantalla está diseñada para mostrarse durante las sesiones plenarias:</p>
-            <ul>
-                <li>Muestra el tiempo restante de cada intervención</li>
-                <li>Cambia de color cuando el tiempo está por agotarse</li>
-                <li>Muestra alertas visuales cuando el tiempo se ha agotado</li>
-            </ul>
+            <p>Esta pantalla se utiliza durante el pleno para mostrar los tiempos en curso.</p>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/pantalla_visualizacion.png" alt="Pantalla de visualización del pleno">
+            </div>
 
             <h3>Controles Adicionales:</h3>
-            <p>Desde la ventana de controles (que se abre automáticamente):</p>
             <ul>
-                <li>Puede pausar/reanudar temporizadores individuales</li>
-                <li>Reiniciar tiempos si es necesario</li>
-                <li>Ajustar volúmenes de notificaciones</li>
+                <li>Pause/reanude temporizadores</li>
+                <li>Reinicie tiempos si es necesario</li>
+                <li>Controle el volumen de las notificaciones</li>
             </ul>
         </div>
-        """
 
-        html_content += """
         </body>
         </html>
         """
-
         self.texto_guia.setHtml(html_content)
-        # Mover el cursor al inicio
-        self.texto_guia.moveCursor(QTextCursor.MoveOperation.Start)
+        self.texto_guia.moveCursor(QTextCursor.MoveOperation.Start)  # Mostrar desde el inicio
