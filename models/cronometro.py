@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QTimer
-
+import re
 
 class Cronometro:
-    def __init__(self, nombre, minutos, segundos, numeracion=None, logo=None):
+    def __init__(self, nombre, minutos, segundos, numeracion=None, logo=None, todos_cronometros=None):
         self.nombre = nombre
         self.minutos = minutos
         self.segundos = segundos
@@ -11,51 +11,13 @@ class Cronometro:
         self.timer = None
         self.widget = None
         self.logo_path = logo 
-        self.minutos_originales = minutos  # Guardar valores originales
+        self.minutos_originales = minutos
         self.segundos_originales = segundos
+        self.ya_entro_en_exceso = False
+        self.todos_cronometros = todos_cronometros  # Lista de todos los cronómetros
 
-########################################################################################################
+    ##################################################################################
 
-    def iniciar(self, callback_actualizacion, callback_alarma):
-        if not self.corriendo:
-            self.corriendo = True
-            self.timer = QTimer()
-            self.timer.timeout.connect(lambda: self._actualizar(callback_actualizacion, callback_alarma))
-            self.timer.start(1000)
 
-########################################################################################################
 
-    def detener(self):
-        if self.corriendo:
-            self.corriendo = False
-            if self.timer:
-                self.timer.stop()
-                self.timer = None
-
-########################################################################################################
-
-    def resetear(self, minutos=None, segundos=None):
-        self.detener()
-        if minutos is not None:
-            self.minutos = minutos
-        if segundos is not None:
-            self.segundos = segundos
-        else:
-            # Si no se especifican valores, usar los originales
-            self.minutos = self.minutos_originales
-            self.segundos = self.segundos_originales
-
-########################################################################################################
-
-    def _actualizar(self, callback_actualizacion, callback_alarma):
-        if self.segundos > 0:
-            self.segundos -= 1
-        elif self.minutos > 0:
-            self.minutos -= 1
-            self.segundos = 59
-        else:
-            self.detener()
-            callback_alarma()
-            return
-
-        callback_actualizacion()
+   

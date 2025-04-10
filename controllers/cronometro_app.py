@@ -150,7 +150,6 @@ class CronometroApp(QMainWindow):
         ayuda_menu.addAction(info_action)
 
         # Opción Salir
-        # barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
 
         salir_action = QAction(self)
         salir_action.setIcon(QIcon("assets/exit_icon.png"))
@@ -219,26 +218,45 @@ class CronometroApp(QMainWindow):
 ########################################################################################################
 
     def mostrar_pleno(self, tipo_pleno):
-        cronometros = Almacenamiento.cargar_cronometros(tipo_pleno)
-    
-        if cronometros:
-          self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
-          self.ventana_visualizacion.show()
-
-          self.ventana_controles = VentanaControles(cronometros, tipo_pleno, self.sound_alarm)
-          self.ventana_controles.tiempo_actualizado.connect(self.ventana_visualizacion.actualizar_tiempo)  # Conectar señal
-          self.ventana_controles.show()
+        # Cargar cronómetros según el tipo de pleno
+        if tipo_pleno == "ordinario":
+            cronometros = Almacenamiento.cargar_cronometros_ordinario()
+        elif tipo_pleno == "extraordinario":
+            cronometros = Almacenamiento.cargar_cronometros_extraordinario()
         else:
-          print(f"No se encontraron cronómetros para el tipo de pleno: {tipo_pleno}")
+            print(f"Tipo de pleno desconocido: {tipo_pleno}")
+            return
+
+        if cronometros:
+            # Crear y mostrar la ventana de visualización
+            self.ventana_visualizacion = VentanaVisualizacion(cronometros, tipo_pleno)
+            self.ventana_visualizacion.show()
+
+            # Crear y mostrar la ventana de controles
+            self.ventana_controles = VentanaControles(cronometros, tipo_pleno, self.sound_alarm)
+            self.ventana_controles.tiempo_actualizado.connect(self.ventana_visualizacion.actualizar_tiempo)  # Conectar señal
+            self.ventana_controles.show()
+        else:
+            print(f"No se encontraron cronómetros para el tipo de pleno: {tipo_pleno}")
+
 
 ########################################################################################################
 
     def cargar_temporizadores(self):
         """Carga los temporizadores desde el archivo"""
-        datos = Almacenamiento.cargar_cronometros(self.tipo_pleno_actual)
+        # Cargar cronómetros según el tipo de pleno actual
+        if self.tipo_pleno_actual == "ordinario":
+            datos = Almacenamiento.cargar_cronometros_ordinario()
+        elif self.tipo_pleno_actual == "extraordinario":
+            datos = Almacenamiento.cargar_cronometros_extraordinario()
+        else:
+            print(f"Tipo de pleno desconocido: {self.tipo_pleno_actual}")
+            return
+
         self.temporizadores = []
         self.pagina_dividida.lista_temporizadores.clear()
 
+        # Agregar los cronómetros cargados a la interfaz
         for item in datos:
             self.agregar_temporizador_desde_datos(
                 item["nombre"], 
@@ -247,6 +265,7 @@ class CronometroApp(QMainWindow):
                 item.get("numeracion"),
                 logo=item.get("logo")
             )
+
 
 ########################################################################################################
 
@@ -306,10 +325,10 @@ class CronometroApp(QMainWindow):
         self.cronometro_editando.minutos = self.minutos
         self.cronometro_editando.segundos = self.segundos
         self.cronometro_editando.logo_path = logo_path  # Asegúrate de usar 'logo_path'
-
+        print(f"Actualizando cronómetro: {self.cronometro_editando.nombre} - {self.cronometro_editando.minutos}:{self.cronometro_editando.segundos} - Logo: {self.cronometro_editando.logo_path}")
         # Actualizar UI para reflejar los cambios
         self.pagina_dividida.actualizar_temporizador_ui(self.cronometro_editando)
-
+        print(f"Tipo de pleno actual: {self.tipo_pleno_actual}")
         # Guardar todos los cronómetros en el archivo
         Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
     

@@ -1,10 +1,10 @@
 [
     {
-        "nombre": "INTERVENCION PSOE",
-        "minutos": 4,
-        "segundos": 0,
+        "nombre": "INTERVENCION PSOE. I",
+        "minutos": 0,
+        "segundos": 4,
         "numeracion": 1,
-        "logo": "logos\\PSOE_logo.png"
+        "logo": null
     },
     {
         "nombre": "INTERVENCION PSOE",
@@ -28,7 +28,7 @@
         "logo": "logos\\PP_logo.png"
     },
     {
-        "nombre": "INTERVENCION POR_A",
+        "nombre": "INTERVENCION POR_A. I",
         "minutos": 4,
         "segundos": 0,
         "numeracion": 5,

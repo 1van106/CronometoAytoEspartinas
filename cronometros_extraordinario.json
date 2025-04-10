@@ -25,7 +25,20 @@
         "minutos": 4,
         "segundos": 0,
         "numeracion": 4,
-        "logo": "logos\\logo_espartinas.png"
-
+        "logo": "logos\\PA_logo.png"
+    },
+    {
+        "nombre": "prubajson.II",
+        "minutos": 1,
+        "segundos": 0,
+        "numeracion": 5,
+        "logo": "logos\\PP_logo.png"
+    },
+    {
+        "nombre": "prueba",
+        "minutos": 0,
+        "segundos": 3,
+        "numeracion": 6,
+        "logo": null
     }
 ]

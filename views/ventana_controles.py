@@ -2,7 +2,8 @@ from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
 from PyQt6.QtGui import  QFontDatabase, QFont, QKeySequence, QShortcut,QIcon
 from views.visualizacion import VentanaVisualizacion
-from PyQt6.QtGui import  QFontDatabase, QFont
+from functools import partial
+from models import cronometro
 
 class VentanaControles(QMainWindow):
     # Señal para sincronizar los cronómetros entre ventanas
@@ -22,6 +23,7 @@ class VentanaControles(QMainWindow):
         self.setWindowTitle(f"Pleno {self.tipo_pleno}")
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
+        self.tiempo_labels = [] 
         self.resize(440, 920)
 
         font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
@@ -108,15 +110,14 @@ class VentanaControles(QMainWindow):
 ########################################################################################################
 
     def cerrar_todo(self):
-        """Cerrar tanto la ventana de controles como la ventana de visualización"""
-        self.ventana_visualizacion.close()  # Cerrar la ventana de visualización
+        
         self.close()
 
 ########################################################################################################
     
     def toggle_cronometro(self, index):
         cronometro = self.cronometros[index]
-        tiempo_label = cronometro.get('tiempo_label', None)  # Assuming you have a tiempo_label in cronometro, if not, handle it properly.
+        tiempo_label = cronometro.get('tiempo_label', None)  
     
         if 'corriendo' not in cronometro or not cronometro['corriendo']:
           self.iniciar_cronometro(cronometro, tiempo_label, index)
@@ -221,19 +222,33 @@ class VentanaControles(QMainWindow):
 ########################################################################################################
 
     def iniciar_cronometro(self, cronometro, tiempo_label, index):
-        if 'corriendo' not in cronometro:
-            cronometro['corriendo'] = False
-
-        if not cronometro["corriendo"]:
+        """Inicia o reinicia el cronómetro asegurando que todo el estado se maneje correctamente."""
+        # Verificamos si el cronómetro está detenido
+        if "corriendo" not in cronometro or not cronometro["corriendo"]:
+            print(f"Iniciando cronómetro {index} con tiempo {cronometro['minutos']}:{cronometro['segundos']}")
+          
+            # Marcamos el cronómetro como corriendo
             cronometro["corriendo"] = True
+            
+        
+            # Si ya hay un timer, lo detenemos
+            if "timer" in cronometro:
+                cronometro["timer"].stop()
+
+            # Creamos y arrancamos el timer
             cronometro["timer"] = QTimer(self)
             cronometro["timer"].timeout.connect(lambda: self.actualizar_tiempo(cronometro, tiempo_label, index))
-            cronometro["timer"].start(1000)
+            cronometro["timer"].start(1000)  # 1 segundo
 
+            # Cambiamos el color de la interfaz a activo
+            self.actualizar_color_display(cronometro, 'activo')
+
+            # Actualizamos la interfaz
             self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
 
-             # Cambiar el color a blanco (activo)
-            self.actualizar_color_display(cronometro, 'activo')
+        else:
+            print(f"El cronómetro {index} ya está corriendo. No se puede iniciar de nuevo.")
+
 
 ########################################################################################################
 
@@ -250,17 +265,31 @@ class VentanaControles(QMainWindow):
 ########################################################################################################
 
     def reset_cronometro(self, cronometro, tiempo_label, index):
-        # Usamos los valores originales para restaurar el tiempo
+        """Resetea el cronómetro y lo detiene si está corriendo."""
+    
+        # Restauramos el tiempo original
         cronometro["minutos"] = cronometro.get("minutos_originales", 0)
         cronometro["segundos"] = cronometro.get("segundos_originales", 0)
- 
+
+        
         if cronometro.get("corriendo", False):
           cronometro["corriendo"] = False
           cronometro["timer"].stop()
 
-        tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
-        self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])  # Emitir señal
+        # Restauramos el color de la interfaz (para indicar que está inactivo)
+        self.actualizar_color_display(cronometro, 'inactivo')
 
+        # Actualizamos el texto en la interfaz
+        tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
+
+        # Emitir la señal para actualizar la interfaz
+        self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
+
+        
+        print(f"Cronómetro {index} reseteado: {cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
+
+
+       
 ########################################################################################################
 
     def sonar_alarma(self):
@@ -270,23 +299,82 @@ class VentanaControles(QMainWindow):
 ########################################################################################################
 
     def actualizar_tiempo(self, cronometro, tiempo_label, index):
+        # Reducir el tiempo del cronómetro
         if cronometro["segundos"] > 0:
             cronometro["segundos"] -= 1
         elif cronometro["minutos"] > 0:
             cronometro["minutos"] -= 1
             cronometro["segundos"] = 59
         else:
-            if "alarma_sonada" not in cronometro:
-              cronometro["alarma_sonada"] = True
-              self.sonar_alarma()
-              # Cambiar el color a rojo cuando el tiempo ha pasado
-              self.actualizar_color_display(cronometro, 'pasado')
+            if cronometro["minutos"] == 0 and cronometro["segundos"] == 0:
+                 print(f"Alarma activada para {cronometro['nombre']}")
+                 
+                 print("Alarma no ha sonado, activando alarma y cambio de color.")
+                 cronometro["alarma_sonada"] = True
+                 self.sonar_alarma()  # Suena la alarma
+                 self.actualizar_color_display(cronometro, 'pasado') 
+                 self._sincronizar_cronometros(cronometro)
 
             # Continúa en tiempo negativo
             cronometro["segundos"] -= 1
             if cronometro["segundos"] < 0:
-              cronometro["segundos"] = 59
-              cronometro["minutos"] -= 1
+                cronometro["segundos"] = 59
+                cronometro["minutos"] -= 1
+ 
+            
 
+        # Actualizar la interfaz con el nuevo tiempo
         tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
+        print(f"Tiempo actualizado: {cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
         self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
+        
+
+########################################################################################################
+
+    def _sincronizar_cronometros(self, cronometro):
+        print(f"Sincronizando cronómetros para {cronometro['nombre']}")
+
+        nombre_base = cronometro["nombre"].split('.')[0]
+        print(f"Nombre base del cronómetro: {nombre_base}")
+
+        if 'corriendo' not in cronometro:
+            cronometro['corriendo'] = False
+
+        similares = [c for c in self.cronometros if c != cronometro and c["nombre"].split('.')[0] == nombre_base]
+
+        if not similares:
+            print(f"No se encontraron cronómetros con el mismo nombre base: {nombre_base}")
+            return
+
+        cronometro_duracion = cronometro["minutos_originales"] * 60 + cronometro["segundos_originales"]
+        print(f"Duración del cronómetro actual {cronometro['nombre']}: {cronometro_duracion} segundos")
+
+        for index, menor in enumerate(similares):
+            if 'corriendo' not in menor:
+                menor['corriendo'] = False
+
+            menor_duracion = menor["minutos_originales"] * 60 + menor["segundos_originales"]
+            print(f"Duración del cronómetro {menor['nombre']}: {menor_duracion} segundos")
+
+            if menor_duracion < cronometro_duracion and not menor["corriendo"]:
+                print(f"Iniciando cronómetro {menor['nombre']} ya que su duración es menor.")
+                menor["corriendo"] = True
+                menor["timer"] = QTimer(self)
+
+                # Usamos `partial` para pasar los parámetros correctamente a la función
+                menor["timer"].timeout.connect(partial(self.actualizar_tiempo, menor, menor['tiempo_label'], index))
+
+                menor["timer"].start(1000)
+                self.tiempo_actualizado.emit(index, menor['minutos'], menor['segundos'])
+                self.actualizar_color_display(menor, 'activo')
+
+
+
+
+      
+########################################################################################################
+
+     
+    @staticmethod
+    def _obtener_nombre_base(nombre):
+        return nombre.split('.')[0]
