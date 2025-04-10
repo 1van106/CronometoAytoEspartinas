@@ -150,7 +150,6 @@ class CronometroApp(QMainWindow):
         ayuda_menu.addAction(info_action)
 
         # Opción Salir
-        # barra_menu.addAction("Salir").triggered.connect(QApplication.instance().quit)
 
         salir_action = QAction(self)
         salir_action.setIcon(QIcon("assets/exit_icon.png"))
