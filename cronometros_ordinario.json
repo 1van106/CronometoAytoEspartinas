@@ -4,55 +4,55 @@
         "minutos": 4,
         "segundos": 0,
         "numeracion": 1,
-        "logo": null
-    },
-    {
-        "nombre": "INTERVENCION PP",
-        "minutos": 4,
-        "segundos": 0,
-        "numeracion": 2,
-        "logo": "logos\\PP_logo.png"
-    },
-    {
-        "nombre": "INTERVENCION VOX",
-        "minutos": 4,
-        "segundos": 0,
-        "numeracion": 3,
-        "logo": "logos\\VOX_logo.png"
-    },
-    {
-        "nombre": "INTERVENCION POR_A",
-        "minutos": 4,
-        "segundos": 0,
-        "numeracion": 4,
-        "logo": "logos\\logo_espartinas.png"
+        "logo": "logos\\PSOE_logo.png"
     },
     {
         "nombre": "INTERVENCION PSOE",
         "minutos": 1,
         "segundos": 0,
-        "numeracion": 5,
+        "numeracion": 2,
         "logo": "logos\\PSOE_logo.png"
+    },
+    {
+        "nombre": "INTERVENCION PP",
+        "minutos": 4,
+        "segundos": 0,
+        "numeracion": 3,
+        "logo": "logos\\PP_logo.png"
     },
     {
         "nombre": "INTERVENCION PP",
         "minutos": 1,
         "segundos": 0,
-        "numeracion": 6,
+        "numeracion": 4,
         "logo": "logos\\PP_logo.png"
     },
     {
-        "nombre": "INTERVENCION VOX",
-        "minutos": 1,
+        "nombre": "INTERVENCION POR_A",
+        "minutos": 4,
         "segundos": 0,
-        "numeracion": 7,
-        "logo": "logos\\VOX_logo.png"
+        "numeracion": 5,
+        "logo": "logos\\logo_espartinas.png"
     },
     {
         "nombre": "INTERVENCION POR_A",
         "minutos": 1,
         "segundos": 0,
-        "numeracion": 8,
+        "numeracion": 6,
         "logo": "logos\\logo_espartinas.png"
+    },
+    {
+        "nombre": "INTERVENCION VOX",
+        "minutos": 4,
+        "segundos": 0,
+        "numeracion": 7,
+        "logo": "logos\\VOX_logo.png"
+    },
+    {
+        "nombre": "INTERVENCION VOX",
+        "minutos": 1,
+        "segundos": 0,
+        "numeracion": 8,
+        "logo": "logos\\VOX_logo.png"
     }
 ]
