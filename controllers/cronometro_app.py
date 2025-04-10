@@ -16,6 +16,7 @@ from views.vista_dividida import VistaDividida
 from views.visualizacion import VentanaVisualizacion
 from views.ventana_controles import VentanaControles
 from views.guia import VentanaGuia
+from views.sesion_pleno import SesionPleno
 
 
 class CronometroApp(QMainWindow):
@@ -26,6 +27,8 @@ class CronometroApp(QMainWindow):
         self.inicializar_estados()
         self.inicializar_audio()
         self.init_ui()
+        self.sesion_pleno = SesionPleno()
+        
 
 ########################################################################################################
 
@@ -35,6 +38,7 @@ class CronometroApp(QMainWindow):
         screen = QGuiApplication.primaryScreen().geometry()
         self.setGeometry(screen)
         self.resize(1200, 800)
+        
 
 ########################################################################################################
 
@@ -109,9 +113,9 @@ class CronometroApp(QMainWindow):
 
         # Menú Visualización
         visualizacion_menu = barra_menu.addMenu("Visualización")
-        visualizacion_menu.addAction("Ver Pleno Ordinario").triggered.connect(lambda: self.mostrar_pleno("ordinario"))
+        visualizacion_menu.addAction("Ver Pleno Ordinario").triggered.connect(lambda: self.iniciar_sesion_y_mostrar_pleno("ordinario"))
         visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(
-            lambda: self.mostrar_pleno("extraordinario"))
+            lambda: self.iniciar_sesion_y_mostrar_pleno("extraordinario"))
         
         # Opción Ayuda
         ayuda_menu = barra_menu.addMenu("Ayuda")
@@ -423,3 +427,39 @@ class CronometroApp(QMainWindow):
 
         self.temporizadores = nuevos_temporizadores
         Almacenamiento.guardar_cronometros(self.tipo_pleno_actual, self.temporizadores)
+
+
+########################################################################################################    
+
+    def iniciar_sesion_y_mostrar_pleno(self, tipo_pleno):
+        # Primero preguntar si desea iniciar sesión
+        iniciar_sesion = self.mostrar_preguntar_iniciar_sesion()
+    
+        # Si se inicia la sesión, mostrar el pleno después
+        if iniciar_sesion:
+            print(f"Sesión de pleno iniciada. Mostrando pleno {tipo_pleno}.")
+            self.mostrar_pleno(tipo_pleno)  # Llamada para mostrar el pleno (ordinario o extraordinario)
+        else:
+            print(f"No se ha iniciado sesión. Mostrando pleno {tipo_pleno} sin sesión.")
+            self.mostrar_pleno(tipo_pleno)  # Llamada para mostrar el pleno sin iniciar sesión
+
+########################################################################################################     
+
+    # Método para preguntar si iniciar sesión de pleno
+    def mostrar_preguntar_iniciar_sesion(self):
+        """Pregunta al usuario si desea iniciar la sesión del pleno"""
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setText("¿Deseas iniciar una sesión de pleno?")
+        msg.setWindowTitle("Iniciar Sesión")
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+        # Mostrar el mensaje
+        ret = msg.exec()  # Usamos exec_() para mostrar el cuadro de diálogo correctamente
+
+        if ret == QMessageBox.StandardButton.Yes:
+            # Aquí iría el código para iniciar la sesión de pleno
+            print("Iniciando sesión de pleno...")
+            self.sesion_pleno.iniciar_sesion()  # Ejemplo, si la clase 'SesionPleno' está correctamente integrada
+        else:
+            print("No se ha iniciado la sesión del pleno.")

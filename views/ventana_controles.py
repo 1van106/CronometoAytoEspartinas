@@ -320,8 +320,12 @@ class VentanaControles(QMainWindow):
             if cronometro["segundos"] < 0:
                 cronometro["segundos"] = 59
                 cronometro["minutos"] -= 1
- 
             
+        # Aquí acumulamos el tiempo total del cronómetro (en segundos)
+        if "tiempo_total" not in cronometro:
+            cronometro["tiempo_total"] = 0  # Inicializamos el campo tiempo_total si no existe
+        cronometro["tiempo_total"] += 1  # Acumulamos 1 segundo al tiempo total
+   
 
         # Actualizar la interfaz con el nuevo tiempo
         tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")

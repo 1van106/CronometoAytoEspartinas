@@ -1,11 +1,14 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QMessageBox,QApplication
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QFontDatabase, QFont, QPixmap, QKeyEvent
 from widgets.auto_font_label import AutoFontLabel
+from views.sesion_pleno import SesionPleno
 
 class VentanaVisualizacion(QWidget):
     def __init__(self, cronometros, tipo_pleno):
         super().__init__()
+        self.sesion_pleno = SesionPleno()
+     
 
         # Cargar la fuente
         font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
@@ -63,8 +66,6 @@ class VentanaVisualizacion(QWidget):
             tiempo_label.setFont(self.fuente_led)
             contenedor_layout.addWidget(tiempo_label, stretch=1)
 
-            # Agregar el numeracion_label al diccionario de cada cronometro
-            cronometro["numeracion_label"] = numeracion_label
 
             # Agregar el numeracion_label al diccionario de cada cronometro
             cronometro["numeracion_label"] = numeracion_label
@@ -168,5 +169,35 @@ class VentanaVisualizacion(QWidget):
 ########################################################################################   
 
     def closeEvent(self, event):
-        """Cierra la ventana correctamente"""
-        event.accept()
+        """Este método se llama cuando se intenta cerrar la ventana de visualización."""
+        
+        # Mostrar un mensaje de confirmación preguntando si se quiere generar el reporte
+        reply = self.mostrar_preguntar_generar_reporte()
+
+        if reply == QMessageBox.StandardButton.Yes:
+            self.sesion_pleno.generar_reporte()  # Llamamos al método de generar reporte de sesion_pleno
+            self.sesion_pleno.finalizar_sesion()  # Llamamos al método de cerrar sesión de sesion_pleno
+            event.accept()  # Aceptar el cierre de la ventana
+        else:
+            self.sesion_pleno.finalizar_sesion()  # Cerrar sesión sin reporte
+            event.accept()
+
+########################################################################################   
+    
+    
+
+########################################################################################   
+       
+    # Método para preguntar si generar el reporte
+    def mostrar_preguntar_generar_reporte(self):
+        """Pregunta al usuario si desea generar el reporte"""
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setText("¿Quieres generar el reporte antes de cerrar la sesión del pleno?")
+        msg.setWindowTitle("Generar Reporte")
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+        # Mostrar el mensaje
+        ret = msg.exec()  # Usamos exec_() para mostrar el cuadro de diálogo correctamente
+
+        return ret
