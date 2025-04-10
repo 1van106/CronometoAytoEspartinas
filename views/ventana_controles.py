@@ -271,16 +271,10 @@ class VentanaControles(QMainWindow):
         cronometro["minutos"] = cronometro.get("minutos_originales", 0)
         cronometro["segundos"] = cronometro.get("segundos_originales", 0)
 
-        # Desactivamos la alarma si ha sonado
-        cronometro["alarma_sonada"] = False
-
-        # Restauramos el estado de "corriendo" a False
-        cronometro["corriendo"] = False
-    
-        # Detenemos el cronómetro si está corriendo
-        if "timer" in cronometro and cronometro["corriendo"]:  # Verifica si el temporizador está en ejecución
-            cronometro["timer"].stop()
-            cronometro["corriendo"] = False   # Detener el temporizador
+        
+        if cronometro.get("corriendo", False):
+          cronometro["corriendo"] = False
+          cronometro["timer"].stop()
 
         # Restauramos el color de la interfaz (para indicar que está inactivo)
         self.actualizar_color_display(cronometro, 'inactivo')
@@ -290,12 +284,12 @@ class VentanaControles(QMainWindow):
 
         # Emitir la señal para actualizar la interfaz
         self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
-    
+
+        
         print(f"Cronómetro {index} reseteado: {cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
 
 
-
-
+       
 ########################################################################################################
 
     def sonar_alarma(self):
@@ -312,12 +306,14 @@ class VentanaControles(QMainWindow):
             cronometro["minutos"] -= 1
             cronometro["segundos"] = 59
         else:
-            # Si el cronómetro llegó a 00:00
-            if "alarma_sonada" not in cronometro:
-                cronometro["alarma_sonada"] = True
-                self.sonar_alarma()  # Suena la alarma
-                self.actualizar_color_display(cronometro, 'pasado') 
-                self._sincronizar_cronometros(cronometro)
+            if cronometro["minutos"] == 0 and cronometro["segundos"] == 0:
+                 print(f"Alarma activada para {cronometro['nombre']}")
+                 
+                 print("Alarma no ha sonado, activando alarma y cambio de color.")
+                 cronometro["alarma_sonada"] = True
+                 self.sonar_alarma()  # Suena la alarma
+                 self.actualizar_color_display(cronometro, 'pasado') 
+                 self._sincronizar_cronometros(cronometro)
 
             # Continúa en tiempo negativo
             cronometro["segundos"] -= 1
