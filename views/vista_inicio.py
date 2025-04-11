@@ -9,7 +9,7 @@ class VistaInicio(QWidget):
         super().__init__()
         self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
 
-        # Configuración original (transparente)
+        # Configuración original
         self.setStyleSheet("background: transparent;")
 
         # Layout principal
@@ -17,8 +17,7 @@ class VistaInicio(QWidget):
         layout.setContentsMargins(20, 30, 20, 20)
         layout.setSpacing(20)
 
-        # Elementos originales (sin cambios)
-        layout.addStretch(1)
+        # Elementos originales
 
         self.logo_label = QLabel(self)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -67,8 +66,8 @@ class VistaInicio(QWidget):
         """Dibuja el fondo oscuro + imagen semitransparente"""
         painter = QPainter(self)
 
-        # 1. Fondo oscuro forzado (nuevo)
-        painter.fillRect(self.rect(), QColor(40, 40, 40))  # Color oscuro neutro
+        # 1. Fondo oscuro forzado
+        painter.fillRect(self.rect(), QColor(0, 0, 0))  # Color oscuro neutro
 
         # 2. Imagen original con transparencia (15%)
         fondo_path = os.path.join("assets", "fondo_inicio.jpg")
