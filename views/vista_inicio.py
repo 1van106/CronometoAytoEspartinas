@@ -17,13 +17,14 @@ class VistaInicio(QWidget):
         layout.setContentsMargins(20, 30, 20, 20)
         layout.setSpacing(20)
 
-        # Elementos originales
+        # --- Elementos de la interfaz ---
 
         self.logo_label = QLabel(self)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.cargar_logo()
         layout.addWidget(self.logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
+        # Título App
         titulo = QLabel("AYUNTAMIENTO DE ESPARTINAS", self)
         titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         titulo.setFont(QFont("Montserrat", 36, QFont.Weight.Bold))
@@ -35,6 +36,7 @@ class VistaInicio(QWidget):
         """)
         layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignCenter)
 
+        # Subtíyulo App
         subtitulo = QLabel("Sistema de Gestión de Tiempos", self)
         subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         subtitulo.setFont(QFont("Roboto", 24, QFont.Weight.Normal))
@@ -47,6 +49,8 @@ class VistaInicio(QWidget):
         layout.addWidget(subtitulo, alignment=Qt.AlignmentFlag.AlignCenter)
 
         layout.addStretch(2)
+
+########################################################################################################
 
     def cargar_logo(self):
         logo_path = os.path.join("assets", "logo_espartinas.png")
@@ -62,12 +66,14 @@ class VistaInicio(QWidget):
             )
             self.logo_label.setFixedSize(400, 400)
 
+########################################################################################################
+
     def paintEvent(self, event):
         """Dibuja el fondo oscuro + imagen semitransparente"""
         painter = QPainter(self)
 
         # 1. Fondo oscuro forzado
-        painter.fillRect(self.rect(), QColor(0, 0, 0))  # Color oscuro neutro
+        painter.fillRect(self.rect(), QColor(40, 40, 40))  # Color oscuro neutro
 
         # 2. Imagen original con transparencia (15%)
         fondo_path = os.path.join("assets", "fondo_inicio.jpg")

@@ -78,6 +78,8 @@ class VentanaGuia(QWidget):
         btn_cerrar.clicked.connect(self.close)  # Acción del botón
         layout_principal.addWidget(btn_cerrar, alignment=Qt.AlignmentFlag.AlignCenter)
 
+########################################################################################################
+
     def configurar_guia_completa(self):
         """
         Crea el contenido HTML de la guía de usuario.
