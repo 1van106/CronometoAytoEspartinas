@@ -113,7 +113,7 @@ class CronometroApp(QMainWindow):
         visualizacion_menu.addAction("Ver Pleno Ordinario").triggered.connect(lambda: self.mostrar_pleno("ordinario"))
         visualizacion_menu.addAction("Ver Pleno Extraordinario").triggered.connect(
             lambda: self.mostrar_pleno("extraordinario"))
-        
+
         # Opción Ayuda
         ayuda_menu = barra_menu.addMenu("Ayuda")
         guia_widget = QWidget()
@@ -150,6 +150,8 @@ class CronometroApp(QMainWindow):
         info_action = QAction("Información", self)
         info_action.triggered.connect(self.mostrar_info)
         ayuda_menu.addAction(info_action)
+
+        # Opción Salir
 
         salir_action = QAction(self)
         salir_action.setIcon(QIcon("assets/exit_icon.png"))

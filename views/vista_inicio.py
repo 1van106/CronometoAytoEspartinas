@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter,QIcon
+from PyQt6.QtGui import QPixmap, QFont, QColor, QPainter, QIcon
 from PyQt6.QtCore import Qt
 import os
 
@@ -7,26 +7,30 @@ import os
 class VistaInicio(QWidget):
     def __init__(self, fuente_oficial):
         super().__init__()
+<<<<<<< HEAD
         
         # Configuración básica
+=======
+        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
+
+        # Configuración original
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         self.setStyleSheet("background: transparent;")
         self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
 
-        # Layout principal con elementos elevados
+        # Layout principal
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 30, 20, 20)  # Margen superior reducido para subir contenido
+        layout.setContentsMargins(20, 30, 20, 20)
         layout.setSpacing(20)
 
-        # Espacio flexible superior mínimo
-        layout.addStretch(1)
+        # --- Elementos de la interfaz ---
 
-        # Logo más grande (400x400)
         self.logo_label = QLabel(self)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.cargar_logo()
         layout.addWidget(self.logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        # Título en blanco y más grande (36px)
+        # Título App
         titulo = QLabel("AYUNTAMIENTO DE ESPARTINAS", self)
         titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         titulo.setFont(QFont("Montserrat", 36, QFont.Weight.Bold))
@@ -38,7 +42,7 @@ class VistaInicio(QWidget):
         """)
         layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        # Subtítulo en blanco y más grande (24px)
+        # Subtíyulo App
         subtitulo = QLabel("Sistema de Gestión de Tiempos", self)
         subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         subtitulo.setFont(QFont("Roboto", 24, QFont.Weight.Normal))
@@ -50,7 +54,6 @@ class VistaInicio(QWidget):
         """)
         layout.addWidget(subtitulo, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        # Espacio flexible inferior reducido para subir el contenido
         layout.addStretch(2)
 
 ########################################################################################################
@@ -63,7 +66,7 @@ class VistaInicio(QWidget):
         pixmap = QPixmap(logo_path)
         if not pixmap.isNull():
             self.logo_label.setPixmap(
-                pixmap.scaled(400, 400,  # Logo más grande (400x400)
+                pixmap.scaled(400, 400,
                               Qt.AspectRatioMode.KeepAspectRatio,
                               Qt.TransformationMode.SmoothTransformation)
             )

@@ -5,12 +5,14 @@ from PyQt6.QtGui import QFont, QTextCursor
 from PyQt6.QtGui import QIcon
 
 
+
 class VentanaGuia(QWidget):
     def __init__(self):
         super().__init__()
 
         # Título y tamaño de la ventana
         self.setWindowTitle("Guía de Usuario - Cronómetro Municipal")
+
         self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
         self.resize(1000, 750)
 
@@ -92,7 +94,8 @@ class VentanaGuia(QWidget):
         <!DOCTYPE html>
         <html>
         <head>
-       <style>
+        <style>
+
             body {
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-size: 16px;
@@ -193,6 +196,100 @@ class VentanaGuia(QWidget):
             </div>
         </div>
 
+            .seccion {
+                margin-bottom: 40px;
+            }
+            h1 {
+                color: #2c3e50;
+                font-size: 32px;
+                text-align: center;
+                margin-top: 0;
+                margin-bottom: 20px;
+                background-color: #eaf2f8;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            h2 {
+                color: #3498db;
+                font-size: 24px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                border-left: 5px solid #3498db;
+                padding-left: 10px;
+            }
+            h3 {
+                color: #2c3e50;
+                font-size: 20px;
+                margin-top: 15px;
+            }
+            p {
+                margin-top: 15px;
+            }
+            ul, ol {
+                margin-top: 10px;
+                margin-bottom: 15px;
+                padding-left: 30px;
+            }
+            li {
+                margin-bottom: 8px;
+            }
+            b, strong {
+                color: #e74c3c;
+            }
+            i {
+                color: #7f8c8d;
+            }
+            .nota {
+                background-color: #f8f9fa;
+                border-left: 4px solid #3498db;
+                padding: 10px 15px;
+                margin: 15px 0;
+                font-style: italic;
+            }
+            .imagen {
+                display: block;
+                text-align: center;
+                margin: 0;
+                padding: 0;
+            }
+            img {
+                max-width: 700px;
+                width: 100%;
+                height: auto;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+                display: block;
+                margin-bottom: 0px !important;
+                padding-bottom: 0px !important;
+            }
+            .img-ajustada {
+                display: inline-block;
+                max-width: 600px;
+                width: 100%;
+                height: auto;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        </styl>
+        </head>
+        <body>
+
+        <!-- Título principal -->
+        <div class='seccion'>
+            <h1>Guía de Usuario del Cronómetro Municipal</h1>
+            <p style="text-align: center;">
+                Esta aplicación está diseñada para gestionar los tiempos de intervención en los plenos del Ayuntamiento de Espartinas.
+            </p>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/vista_general.png" alt="Vista general de la aplicación">
+            </div>
+        </div>
+
         <!-- Menú principal -->
         <div class='seccion'>
             <h2>1. Menú Principal</h2>
@@ -245,6 +342,26 @@ class VentanaGuia(QWidget):
             <div class="imagen">
                 <img class="img-ajustada" src="assets/configuracion.jpg" alt="Configuración del temporizador">
             </div>
+
+                    </ul>
+                </li>
+            </ol>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/configuracion_temporizador.png" alt="Configuración del temporizador">
+            </div>
+
+            <div class='nota'>
+                <b>Nota:</b> Los cambios se guardan automáticamente cuando se añaden o modifican temporizadores.
+            </div>
+
+            <h3>Uso Durante el Pleno:</h3>
+            <p>Acceda a <b>Visualización > Ver Pleno...</b> para mostrar los temporizadores activos.</p>
+            <ul>
+                <li>Cuenta regresiva visible</li>
+                <li>Indicador visual cuando el tiempo se agota</li>
+                <li>Sonido de aviso</li>
+            </ul>
+
         </div>
 
         <!-- Modo de visualización -->
@@ -310,8 +427,25 @@ class VentanaGuia(QWidget):
         </div>
 
 
+            <p>Esta pantalla se utiliza durante el pleno para mostrar los tiempos en curso.</p>
+            <div class="imagen">
+                <img class="img-ajustada" src="assets/pantalla_visualizacion.png" alt="Pantalla de visualización del pleno">
+            </div>
+
+            <h3>Controles Adicionales:</h3>
+            <ul>
+                <li>Pause/reanude temporizadores</li>
+                <li>Reinicie tiempos si es necesario</li>
+                <li>Controle el volumen de las notificaciones</li>
+            </ul>
+        </div>
+
         </body>
         </html>
         """
         self.texto_guia.setHtml(html_content)
+
         self.texto_guia.moveCursor(QTextCursor.MoveOperation.Start)  # Mostrar desde el inicio
+
+        self.texto_guia.moveCursor(QTextCursor.MoveOperation.Start)  # Mostrar desde el inicio
+

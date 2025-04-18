@@ -1,29 +1,49 @@
 [
     {
+<<<<<<< HEAD
         "nombre": "INTERVENCION PSOE 1",
+=======
+        "nombre": "INTERVENCION PSOE",
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         "minutos": 0,
         "segundos": 4,
         "numeracion": 1,
         "logo": "logos\\PSOE_logo.png"
     },
     {
+<<<<<<< HEAD
         "nombre": "INTERVENCION PP 1",
+=======
+        "nombre": "INTERVENCION PSOE",
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         "minutos": 4,
         "segundos": 0,
         "numeracion": 2,
-        "logo": "logos\\PP_logo.png"
+        "logo": "logos\\PSOE_logo.png"
     },
     {
+<<<<<<< HEAD
         "nombre": "INTERVENCION VOX 1",
+=======
+        "nombre": "INTERVENCION PP",
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         "minutos": 4,
         "segundos": 0,
         "numeracion": 3,
-        "logo": "logos\\VOX_logo.png"
+        "logo": "logos\\PP_logo.png"
+    },
+    {
+        "nombre": "INTERVENCION PP",
+        "minutos": 1,
+        "segundos": 0,
+        "numeracion": 4,
+        "logo": "logos\\PP_logo.png"
     },
     {
         "nombre": "INTERVENCION POR_A 1",
         "minutos": 4,
         "segundos": 0,
+<<<<<<< HEAD
         "numeracion": 4,
         "logo": "logos\\IU_logo.png"
     },
@@ -36,23 +56,43 @@
     },
     {
         "nombre": "INTERVENCION PP 2",
+=======
+        "numeracion": 5,
+        "logo": "logos\\logo_espartinas.png"
+    },
+    {
+        "nombre": "INTERVENCION POR_A",
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         "minutos": 1,
         "segundos": 0,
         "numeracion": 6,
-        "logo": "logos\\PP_logo.png"
+        "logo": "logos\\logo_espartinas.png"
     },
     {
+<<<<<<< HEAD
         "nombre": "INTERVENCION VOX 2",
         "minutos": 1,
+=======
+        "nombre": "INTERVENCION VOX",
+        "minutos": 4,
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         "segundos": 0,
         "numeracion": 7,
         "logo": "logos\\VOX_logo.png"
     },
     {
+<<<<<<< HEAD
         "nombre": "INTERVENCION POR_A 2",
         "minutos": 1,
         "segundos": 0,
         "numeracion": 8,
         "logo": "logos\\IU_logo.png"
+=======
+        "nombre": "INTERVENCION VOX",
+        "minutos": 1,
+        "segundos": 0,
+        "numeracion": 8,
+        "logo": "logos\\VOX_logo.png"
+>>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
     }
 ]
