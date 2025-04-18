@@ -7,16 +7,15 @@ import os
 class VistaInicio(QWidget):
     def __init__(self, fuente_oficial):
         super().__init__()
-<<<<<<< HEAD
+
         
         # Configuración básica
-=======
+
         self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
 
         # Configuración original
->>>>>>> 93fa8bcf1d65f567fafc9684a8d69ac4834c10db
         self.setStyleSheet("background: transparent;")
-        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
+        
 
         # Layout principal
         layout = QVBoxLayout(self)
