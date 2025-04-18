@@ -7,9 +7,10 @@ import os
 class VistaInicio(QWidget):
     def __init__(self, fuente_oficial):
         super().__init__()
-        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
+        
         # Configuración básica
         self.setStyleSheet("background: transparent;")
+        self.setWindowIcon(QIcon("assets/logo_espartinas_copy1.png"))
 
         # Layout principal con elementos elevados
         layout = QVBoxLayout(self)
@@ -71,12 +72,16 @@ class VistaInicio(QWidget):
 ########################################################################################################
 
     def paintEvent(self, event):
-        """Dibuja el fondo con transparencia"""
+        """Dibuja el fondo oscuro + imagen semitransparente"""
+        painter = QPainter(self)
+
+        # 1. Fondo oscuro forzado
+        painter.fillRect(self.rect(), QColor(40, 40, 40))  # Color oscuro neutro
+
+        # 2. Imagen original con transparencia (15%)
         fondo_path = os.path.join("assets", "fondo_inicio.jpg")
         if os.path.exists(fondo_path):
-            painter = QPainter(self)
             pixmap = QPixmap(fondo_path)
-
             if not pixmap.isNull():
                 pixmap = pixmap.scaled(
                     self.size(),
@@ -85,4 +90,5 @@ class VistaInicio(QWidget):
                 )
                 painter.setOpacity(0.15)
                 painter.drawPixmap(0, 0, pixmap)
-                painter.end()
+
+        painter.end()

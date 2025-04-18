@@ -24,7 +24,7 @@ class VentanaControles(QMainWindow):
         self.sound_alarm = sound_alarm
         self.cronometros = cronometros 
         self.tiempo_labels = [] 
-        self.resize(440, 920)
+        self.resize(500, 920)
 
         font_id = QFontDatabase.addApplicationFont("assets/DS-DIGI.TTF")
         font_families = QFontDatabase.applicationFontFamilies(font_id)
@@ -299,34 +299,47 @@ class VentanaControles(QMainWindow):
 ########################################################################################################
 
     def actualizar_tiempo(self, cronometro, tiempo_label, index):
-        # Reducir el tiempo del cronómetro
-        if cronometro["segundos"] > 0:
-            cronometro["segundos"] -= 1
-        elif cronometro["minutos"] > 0:
-            cronometro["minutos"] -= 1
-            cronometro["segundos"] = 59
-        else:
-            if cronometro["minutos"] == 0 and cronometro["segundos"] == 0:
-                 print(f"Alarma activada para {cronometro['nombre']}")
-                 
-                 print("Alarma no ha sonado, activando alarma y cambio de color.")
-                 cronometro["alarma_sonada"] = True
-                 self.sonar_alarma()  # Suena la alarma
-                 self.actualizar_color_display(cronometro, 'pasado') 
-                 self._sincronizar_cronometros(cronometro)
+        # Inicializa la bandera si no existe
+        if "alarma_sonada" not in cronometro:
+            cronometro["alarma_sonada"] = False
+            cronometro["tiempo_positivo"] = False  # Añade un flag nuevo
 
-            # Continúa en tiempo negativo
-            cronometro["segundos"] -= 1
-            if cronometro["segundos"] < 0:
-                cronometro["segundos"] = 59
+        # Fase 1: Cuenta atrás
+        if not cronometro["tiempo_positivo"]:
+            if cronometro["segundos"] > 0:
+                cronometro["segundos"] -= 1
+            elif cronometro["minutos"] > 0:
                 cronometro["minutos"] -= 1
- 
-            
+                cronometro["segundos"] = 59
+            else:
+                if not cronometro["alarma_sonada"]:
+                    # Solo una vez
+                    print(f"Alarma activada para {cronometro['nombre']}")
+                    self.sonar_alarma()
+                    self.actualizar_color_display(cronometro, 'pasado')
+                    self._sincronizar_cronometros(cronometro)
+                    cronometro["alarma_sonada"] = True
+                else:
+                    # Cambiar a modo tiempo positivo
+                    cronometro["tiempo_positivo"] = True
+                    cronometro["minutos"] = 0
+                    cronometro["segundos"] = 1  # Empieza en 00:01
 
-        # Actualizar la interfaz con el nuevo tiempo
+        # Fase 2: Cuenta hacia adelante (positivo)
+        else:
+            cronometro["segundos"] += 1
+            if cronometro["segundos"] == 60:
+                cronometro["segundos"] = 0
+                cronometro["minutos"] += 1
+
+        # Actualizar visualmente
         tiempo_label.setText(f"{cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
-        print(f"Tiempo actualizado: {cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
         self.tiempo_actualizado.emit(index, cronometro['minutos'], cronometro['segundos'])
+
+        print(f"Tiempo actualizado: {cronometro['minutos']:02d}:{cronometro['segundos']:02d}")
+
+
+
         
 
 ########################################################################################################

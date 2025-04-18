@@ -1,58 +1,58 @@
 [
     {
-        "nombre": "INTERVENCION PSOE. I",
+        "nombre": "INTERVENCION PSOE 1",
         "minutos": 0,
         "segundos": 4,
         "numeracion": 1,
-        "logo": null
+        "logo": "logos\\PSOE_logo.png"
     },
     {
-        "nombre": "INTERVENCION PP. I",
+        "nombre": "INTERVENCION PP 1",
         "minutos": 4,
         "segundos": 0,
         "numeracion": 2,
         "logo": "logos\\PP_logo.png"
     },
     {
-        "nombre": "INTERVENCION VOX. I",
+        "nombre": "INTERVENCION VOX 1",
         "minutos": 4,
         "segundos": 0,
         "numeracion": 3,
         "logo": "logos\\VOX_logo.png"
     },
     {
-        "nombre": "INTERVENCION POR_A. I",
+        "nombre": "INTERVENCION POR_A 1",
         "minutos": 4,
         "segundos": 0,
         "numeracion": 4,
-        "logo": "logos\\PA_logo.png"
+        "logo": "logos\\IU_logo.png"
     },
     {
-        "nombre": "INTERVENCION PSOE. II",
+        "nombre": "INTERVENCION PSOE 2",
         "minutos": 0,
         "segundos": 2,
         "numeracion": 5,
-        "logo": null
+        "logo": "logos\\PSOE_logo.png"
     },
     {
-        "nombre": "INTERVENCION PP. II",
+        "nombre": "INTERVENCION PP 2",
         "minutos": 1,
         "segundos": 0,
         "numeracion": 6,
         "logo": "logos\\PP_logo.png"
     },
     {
-        "nombre": "INTERVENCION VOX. II",
+        "nombre": "INTERVENCION VOX 2",
         "minutos": 1,
         "segundos": 0,
         "numeracion": 7,
         "logo": "logos\\VOX_logo.png"
     },
     {
-        "nombre": "INTERVENCION POR_A. II",
+        "nombre": "INTERVENCION POR_A 2",
         "minutos": 1,
         "segundos": 0,
         "numeracion": 8,
-        "logo": "logos\\PA_logo.png"
+        "logo": "logos\\IU_logo.png"
     }
 ]

@@ -16,6 +16,7 @@ from views.vista_dividida import VistaDividida
 from views.visualizacion import VentanaVisualizacion
 from views.ventana_controles import VentanaControles
 from views.guia import VentanaGuia
+from views.info import VentanaInfo
 
 
 class CronometroApp(QMainWindow):
@@ -147,6 +148,7 @@ class CronometroApp(QMainWindow):
 
         # Opción Información
         info_action = QAction("Información", self)
+        info_action.triggered.connect(self.mostrar_info)
         ayuda_menu.addAction(info_action)
 
         salir_action = QAction(self)
@@ -204,6 +206,13 @@ class CronometroApp(QMainWindow):
         """Muestra la ventana de guía de usuario"""
         self.ventana_guia = VentanaGuia()
         self.ventana_guia.show()
+
+########################################################################################################
+
+    def mostrar_info(self):
+        """Muestra la ventana de información de la aplicación"""
+        self.ventana_info = VentanaInfo()
+        self.ventana_info.show()
 
 ########################################################################################################
 
