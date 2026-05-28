@@ -20,7 +20,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=111111)](https://python.org)
 [![PyQt6](https://img.shields.io/badge/PyQt6-GUI-41CD52?style=for-the-badge&logo=qt&logoColor=white&labelColor=111111)](https://pypi.org/project/PyQt6/)
-[![Estado](https://img.shields.io/badge/ESTADO-EN_PRODUCCIÓN-1affe4?style=for-the-badge&labelColor=111111)]()
+[![Estado](https://img.shields.io/badge/ESTADO-ENTREGADO-1affe4?style=for-the-badge&labelColor=111111)]()
 
 </div>
 
