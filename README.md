@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/logo_espartinas.png" alt="Logo" width="90"/>
+<img src="assets/logo_espartinas.png" alt="Logo" width="200"/>
 
 ```
 ╔══════════════════════════════════════════════════════════╗
@@ -26,11 +26,10 @@
 
 ---
 
-```bash
+```
 # Aplicación de escritorio para gestionar los tiempos de intervención
 # de los grupos políticos durante los plenos municipales.
 
-ivan@shell:~$ python main.py
   stack     →  Python · PyQt6 · pygame · JSON
   patrón    →  MVC (Model – View – Controller)
   periodo   →  mar–jun 2025
